@@ -34,6 +34,30 @@ class ServiceTests(unittest.TestCase):
     def test_bad_image(self):
         self.assertEqual(self.client.post('/api/predict',content=b'not an image',headers={'content-type':'image/png'}).status_code,400)
 
+    def test_probe_flags_shortcut_compatible_prediction(self):
+        import probe
+        facts = dict(width=640, height=640, aspect=1.0, format='JPEG', mode='RGB', file_kb=36.3)   # typical AV-DDH (hip) file
+        fake = lambda pred: dict(models=[dict(id='pooled', pred=pred)] + [dict(id=f'm{i}', pred=pred) for i in range(3)])
+        out = probe.run(facts, fake('Hip'))
+        self.assertTrue(out['available'] and out['in_range'])
+        self.assertEqual(out['joint']['pred'], 'Hip'); self.assertEqual(out['source']['id'], 'A')
+        self.assertEqual(out['verdict']['level'], 'shortcut')
+        self.assertEqual(probe.run(facts, fake('Shoulder'))['verdict']['level'], 'independent')
+
+    def test_probe_marks_unfamiliar_files(self):
+        import probe
+        facts = dict(width=5000, height=4000, aspect=1.25, format='JPEG', mode='L', file_kb=9000.0)
+        out = probe.run(facts, dict(models=[dict(id='pooled', pred='Hip')] * 4))
+        self.assertEqual(out['verdict']['level'], 'unfamiliar'); self.assertFalse(out['in_range'])
+
+    def test_predict_response_includes_probe(self):
+        buf = io.BytesIO(); Image.new('L', (640, 640), 90).save(buf, 'PNG')
+        response = self.client.post('/api/predict', content=buf.getvalue(), headers={'content-type': 'image/png'})
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertTrue(body['probe']['available']); self.assertIn(body['probe']['verdict']['level'], {'shortcut', 'weak', 'independent', 'unfamiliar'})
+        self.assertNotIn('path', json.dumps(body['probe']).lower())
+
     def test_invalid_content_length(self):
         for length in ['invalid', '-1']:
             self.assertEqual(self.client.post('/api/predict',content=b'',headers={'content-type':'image/png','content-length':length}).status_code,400)
