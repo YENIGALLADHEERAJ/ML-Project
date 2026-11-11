@@ -245,7 +245,7 @@ Historical evaluation scripts retain old machine paths and sealed-test guards. D
 - Input type/size checks, bounded request streams, rate limiting and explicit error states.
 - Saved-output fallback that is clearly separate from live inference.
 - Animated X-ray transitions and a report with image properties and Grad-CAM comparison.
-- A source-shift explorer, result charts/table alternatives, literature reading room, contribution comparison and rubric evidence hub.
+- A source-shift explorer, result charts/table alternatives, literature reading room, contribution comparison and an evidence hub.
 - A sourced implant-history timeline with original schematic reconstructions; these are not scanned or dimensionally accurate CAD models.
 - Nine live saved-specimen predictions reproduced their recorded labels; maximum stored probability difference was 0.00000 in the recorded QA run.
 - Ten service regressions passed. A separate audit recomputed all 438 saved BA summary cells and checked checkpoint/manifest hashes, coverage and split grouping.
