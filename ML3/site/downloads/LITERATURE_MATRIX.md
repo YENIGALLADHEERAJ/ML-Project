@@ -2,7 +2,7 @@
 
 This matrix organizes **17 recent entries already present in the repository bibliography** by their role in the project. It is not a systematic review or a claim that every full text was read in this session. Years below are the bibliography's recorded years; use a strict 2022–2026 calendar window for this preparation, then confirm the department's precise five-year rule. Older foundational papers remain useful but do not count toward the recent-paper target.
 
-The reference numbers and verification notes come from `paper/sections/99_refs.md` and `artifacts/final/reference_verification.csv`. Abstract-only entries must not support detailed numerical comparisons or full-method claims. Preprints do not automatically satisfy the rubric's reputed journal/conference wording. Bibliographic verification is different from critical full-text review.
+The reference numbers and verification notes come from `paper/sections/99_refs.md` and `artifacts/final/reference_verification.csv`. Abstract-only entries must not support detailed numerical comparisons or full-method claims. Preprints do not automatically count as confirmed journal or conference publications. Bibliographic verification is different from critical full-text review.
 
 | Ref | Work / year / primary identifier | Theme and comparison to this project | Reading / evidence limit |
 |---|---|---|---|
