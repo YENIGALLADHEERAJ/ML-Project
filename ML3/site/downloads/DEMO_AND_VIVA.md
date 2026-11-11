@@ -57,4 +57,4 @@ If the API is unavailable, use the workbench's precomputed samples and say the o
 
 **How would deployment scale?** Run a container behind HTTPS with explicit resource and request limits. More worker processes require additional model memory; a bounded queue and shared limiter are needed before multi-user scaling. Docker and throughput were not validated here.
 
-**What is your personal contribution?** Answer using your own evidence form in RUBRIC_AUDIT.md. Do not recite an assigned role that you did not perform. Explain assistance and what you personally verified or learned.
+**What is your personal contribution?** Answer using your own evidence form in TEAM_CHECKLIST.md. Do not recite an assigned role that you did not perform. Explain assistance and what you personally verified or learned.
