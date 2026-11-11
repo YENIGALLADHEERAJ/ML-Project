@@ -1,242 +1,179 @@
-# Literature survey — OrthoTrace
+# Literature Survey for Source-Controlled Evaluation of Orthopaedic Joint Recognition (OrthoTrace)
 
-**Topic:** source-aware evaluation of Hip/Knee/Shoulder recognition in public orthopaedic X-rays. **Updated:** 11 November 2026.
+## 1. Scope of the survey
 
-This survey explains the background, compares related methods and identifies the project's bounded contribution. It uses the repository bibliography and selected primary-source checks. It is a targeted survey, not a systematic review. “A paper exists” and “we critically reviewed its full text” are different statements.
+This survey divides the project topic into three areas: (a) shortcut learning and dataset bias in medical imaging, (b) cross-source generalisation, out-of-distribution (OOD) behaviour and reliability, and (c) anatomy, projection and implant recognition in orthopaedic radiographs, together with the public data and model backbones the project builds on. It is a targeted survey, not a systematic review.
 
-## Why we built OrthoTrace
+Twenty-one works are compared in Section 3. Counting by identity, 16 are journal or conference publications dated 2022–2026 (the working recent window; confirm the evaluator's exact five-year rule), four are preprints (refs [5], [7], [11], [15]; [15] is listed as CVPR 2025 in the project bibliography, but the venue was not independently confirmed) and one is an older application paper (ref [34], 2021). A preprint and its journal version count as one work. The reading depth reached for every reference (full text, page or abstract only) is recorded in Section 8. An entry that was only read at abstract level is summarised at that level and nothing more.
 
-We started with a practical question for an imaging research team. If a model recognizes a joint in a pooled benchmark, will it still recognize that joint in images from a different source? Public collections can differ in which body regions they contain and how images are framed, sized, or labeled. When those differences align with the joint labels, a model can use them to guess the joint. A high pooled score can then overstate how well it will work on an unfamiliar source. Hill and colleagues demonstrated a related shortcut problem using knee radiographs. Ly and colleagues investigated acquisition-related shortcuts across several modalities, and Zech and colleagues showed that pneumonia prediction performance could decline across hospitals. [Hill et al.](https://www.nature.com/articles/s41598-024-79838-6) · [Ly et al.](https://www.nature.com/articles/s41746-024-01118-4) · [Zech et al.](https://doi.org/10.1371/journal.pmed.1002683)
+## 2. Thematic review
 
-## What existed and what OrthoTrace contributes
+### 2.1 Shortcut learning and dataset-origin clues
 
-| Prior work | What it established | What we built for this project |
-|---|---|---|
-| **SAM-X** | Organized musculoskeletal radiographs into 28 anatomy categories. [Primary paper](https://doi.org/10.1007/s00330-022-09184-6) | A narrower anatomy model with a workbench for inspecting how the same X-ray is scored by four checkpoints trained on different sources. |
-| **Mitsuyama et al.** | Evaluated radiograph body-part classification and chest projection/orientation across institutions, including a label-quality application. [Primary paper](https://doi.org/10.1007/s00330-025-12053-7) | A source-controlled orthopaedic benchmark that pairs dataset holdouts with simple shortcut controls and visible per-image disagreements. |
-| **Hill et al. and Ly et al.** | Demonstrated why performance can reflect unintended cues and investigated ways to expose them. [Hill et al.](https://www.nature.com/articles/s41598-024-79838-6) · [Ly et al.](https://www.nature.com/articles/s41746-024-01118-4) | Dimensions-only and metadata baselines, matched-image source comparisons, and a paired border experiment with a within-source control. |
-| **FracAtlas and BTXRD** | Released musculoskeletal radiographs with labels for fracture and bone-tumor research, respectively. [FracAtlas](https://doi.org/10.1038/s41597-023-02432-4) · [BTXRD](https://doi.org/10.1038/s41597-024-04311-y) | Used FracAtlas for source-decoupled testing and BTXRD for an external anatomy check. We preserve the original tags alongside later provisional visual reviews. |
-| **Patel et al.** | Identified hip and knee implant models from radiographs to support research on revision planning. [Primary paper](https://doi.org/10.1148/ryai.2021200183) | Used implant-image sources to test anatomy recognition under source shift. Our output is the visible region, and our evaluation asks how well it transfers. |
+Hill et al. [1] showed that convolutional networks can predict attributes of knee radiographs that cannot be seen in the image, because the labels are tied to confounding variables, and that standard pre-processing did not remove these links. Ly et al. [2] studied acquisition-related shortcuts across several modalities and proposed a way of estimating generalisation without external data by disrupting image structure. Hajishafiezahramini et al. [5] found that the dataset of origin of mammograms remained decodable from learned features even after consistent pre-processing. Rafferty and Rajan [4] discussed how label quality, domain shift and bias limit what public chest datasets can show. Earlier foundations are consistent with this: shortcut learning is a general property of deep networks [23], confounders can carry a hip-fracture prediction [3], a pneumonia model can generalise unevenly across hospitals [24], and radiographic COVID-19 models can select shortcuts over signal [25], with an intervention that swapped laterality markers and compared the effect with random patches of the same size. Cooke et al. [35] extended intervention-based testing with synthetic image modifications.
 
-The distinctive part is the workflow. A reviewer can take one radiograph, compare predictions, inspect the pooled checkpoint's Grad-CAM, see the source and provisional visual labels where available, then export a review record without image pixels or filenames. That connects a benchmark result to an image a person can inspect. An imaging research team could use this workflow to investigate mislabeled files or model disagreements in a de-identified evaluation set.
+Together, these works establish that a high score does not show what a model used. They motivate testing anatomy-free information (image dimensions, file metadata, borders) and source changes directly, rather than treating a pooled score as sufficient evidence.
 
-## Where the evidence supports “best”
+### 2.2 Cross-source generalisation, OOD behaviour and reliability
 
-| Comparison | Strongest result we can defend | Scope |
-|---|---|---|
-| Classical classifiers | **RBF SVM led the six methods at 56.5% balanced accuracy** on 47 FracAtlas validation images after training without FracAtlas. | Hip, Knee, Shoulder. The pooled validation cohort was different. |
-| Expanded model preprocessing | **Center cropping performed best among the three tested crop settings on the BTXRD follow-up.** Knee detections rose from 8 to 21 of 37, and extra Elbow flags dropped from 33 to 16 of 49. Elbow and Shoulder detections stayed at 5 of 5 and 12 of 12. | Same 54 images before and after. This cohort informed the revision. |
-| Specimen 06 | The current expanded model flags **Elbow alone at a model score of 99.7%**. The original benchmark recorded Knee, and the source tag was Leg. | One held-out image with a provisional visual review. The score is a model output. |
-| Dataset shortcut | A random forest using only width, height and aspect ratio fell from **97.1% pooled to 33.3% source-decoupled balanced accuracy**. | An anatomy-free control on the original three-class study. |
+Patwary and Toma [6] reported failures in both directions when a fracture classifier moved between paediatric and mixed-age radiographs, and Hrubý et al. [7] examined cross-centre validation for fracture detection as a feasibility study. Kutbi et al. [8] studied transfer of abnormality detection across anatomical regions using anatomical similarity. Gutbrod et al. [15] benchmarked OOD detection in medical imaging and separated different kinds of shift. Guo et al. [29] showed that modern networks are often poorly calibrated.
 
-The project’s strongest claim is about **inspectability and source-aware evaluation on this benchmark**. Establishing a best-in-class anatomy model would require a shared evaluation cohort, aligned labels and metrics, and direct comparison with prior systems. Clinical usefulness would also require independent clinician labels and a fresh test representative of the intended setting. Our current evidence supports an academic tool for model and dataset review.
+Together, these works motivate reporting internal and shifted performance separately, defining the task precisely, and examining calibration, selective prediction and unknown-input detection independently of ordinary accuracy.
 
-## Research gaps, objectives, and evidence
+### 2.3 Anatomy, projection and implant recognition and data cleanliness
 
-The [classmate NIDS project](https://github.com/jaslyn-j/Concept-drift-detecting_NIDS) informed this section's structure. Its controlled traffic shifts and OrthoTrace's source holdouts address different prediction tasks. In OrthoTrace, source shift means a change in the image dataset or acquisition context. The workbench evaluates fixed checkpoints and has no streaming drift detector or automatic retraining trigger.
+Mitsuyama et al. [9] evaluated body-part and chest-projection classification across institutions, including an application to label quality. Fink et al. [10] classified projection and body side in musculoskeletal radiographs, and Langer et al. [11] studied how clean real-world anatomical-region labels are. Hinterwimmer et al. [32] sorted musculoskeletal radiographs into 28 anatomical categories. Implant studies address a different label: identifying hip implants [12, 14], knee implants with large external validation [13], orthopaedic implants generally [34], and loosening of hip implants [17].
 
-| Gap addressed in our project | Objective | Method and evidence |
-|---|---|---|
-| **G1. Pooled accuracy leaves source transfer unclear.** Prior studies show medical models can exploit acquisition cues. | Measure how much a score changes when a source is excluded. | Compare pooled and source-decoupled protocols, then compare the checkpoints on identical FracAtlas test images in the same-image control. [Saved benchmark](ML3/site/data/results.json) |
-| **G2. A high accuracy score leaves the cue ambiguous.** A network may rely on framing, borders, or dimensions. | Test cues that carry little or no anatomical content. | Fit a dimensions-only Random Forest and run a paired border intervention with matched within-source controls. [Border experiment](ML3/site/downloads/BORDER_AUDIT.md) |
-| **G3. Algorithm rankings can change with the cohort.** Pooled scores alone hide that difference. | Compare standard classifiers on shared features under stated splits. | Fit six supervised methods on PCA-reduced EfficientNet-B3 embeddings. RBF SVM led the 47-image FracAtlas validation holdout at 56.5% balanced accuracy. [Classical comparison](ML3/artifacts/retraining/algorithm-comparison.json) |
-| **G4. Aggregate metrics can hide label conflicts and individual failures.** | Make single-image disagreements reviewable and check the expanded model on another dataset. | Compare four checkpoint outputs and six independent region scores. Export the review record and compare original and revised results on BTXRD. [Frozen external check](ML3/artifacts/retraining/btxrd-mirror-evaluation.json) · [Follow-up](ML3/artifacts/retraining/center-crop-candidates.json) |
+Together, these works show that "classifying an X-ray" covers several different tasks (body part, projection, side, abnormality, implant identity), so scores cannot be compared across them. They also show why implant radiographs are a realistic imaging domain, which makes them useful as source-held-out test cases without OrthoTrace attempting implant identification itself.
 
-### Implemented evaluation workflow
+### 2.4 Data and model foundations
 
-1. Track data provenance and available group identifiers before splitting.
-2. Keep the frozen three-class benchmark separate from the expanded workbench and exploratory analyses.
-3. Use the pooled, source-held-out and dimensions-only experiments to measure generalization and shortcut effects.
-4. Inspect per-image results and provisional labels in the workbench, including specimen 06.
-5. Preserve the first BTXRD run and the later crop follow-up as separate artifacts. The follow-up informed the project revision and needs a fresh external check.
+FracAtlas [18] supplies multi-region musculoskeletal radiographs and, in our benchmark, is the only source containing all three target joints. BTXRD [33] supplies radiographs with anatomy tags used for our external check. MURA [16], a large musculoskeletal abnormality dataset, was not used because it requires a research-use agreement. The remaining sources are the UCI shoulder-implant set [19], the Gornale knee set [20], an OAI-derived knee set [21], the AV-DDH paediatric hip set [22] and the Kaggle hip-implant set [17]. We use EfficientNet [26], Swin Transformer [27] and ConvNeXt [28] as established backbones, and Holm's procedure [30] for multiple comparisons. ImageNet results for these architectures do not establish robustness on our sources.
 
-## 1. What question does the literature help us ask?
+## 3. Comparison of the surveyed work
 
-An imaging model can perform well on a familiar dataset and fail on a different source. Different sources may have different scanners, crops, resolutions, patient groups, labels and implant appearances. If these differences align with the class label, learning the source can help predict the label.
-
-Our question is narrower than general medical AI: **How much can pooled public-dataset evaluation overstate Hip/Knee/Shoulder recognition when the joint and dataset source are associated?**
-
-The literature supports investigating this problem. It does not allow us to claim that our models diagnose disease, recognize implant brands, work in hospitals or outperform unrelated systems.
-
-## 2. Theme A — shortcut learning and dataset-origin clues
-
-### Hill, Koback and Schilling, 2024
-
-*The risk of shortcutting in deep learning algorithms for medical imaging research.* Scientific Reports, 14, 29224. [Publisher DOI](https://doi.org/10.1038/s41598-024-79838-6) · [Full text](https://pmc.ncbi.nlm.nih.gov/articles/PMC11589829/).
-
-This is a close medical-imaging precedent for questioning what a successful CNN actually uses. A model can exploit an unintended relationship in the data. The lesson for OrthoTrace is to test anatomy-free information and source changes rather than treat a high pooled score as sufficient evidence. It does not make our three-joint benchmark redundant: the labels, sources and evaluation endpoints differ. The repository records full-text reading; the primary text was located during this update.
-
-### Ly and colleagues, 2024
-
-*Shortcut learning in medical AI hinders generalization: method for estimating AI model generalization without external data.* npj Digital Medicine. [Primary article](https://www.nature.com/articles/s41746-024-01118-4).
-
-The paper investigates how data-acquisition bias can help models succeed internally but weaken transfer. Its approach includes disrupting structural information to probe remaining shortcuts. OrthoTrace uses a different design: explicit source-held-out testing plus dimension/metadata controls. We should compare the evaluation ideas, not rank the two projects using accuracies from different clinical tasks.
-
-### Hajishafiezahramini and colleagues, 2026
-
-*Dataset-Origin Signatures and Shortcut Learning in Screening Mammography AI: A Cross-Dataset Case Study.* [arXiv:2607.15416](https://arxiv.org/abs/2607.15416).
-
-The abstract describes a mammography experiment with consistent preprocessing and patient-level splits. It also tests whether representations identify the dataset of origin. This directly motivates checking source decodability in OrthoTrace: normalization alone need not remove source information. The modality and target are different, so its performance cannot be used as our baseline. This is a verified preprint record; the present summary is abstract-level, not a new full-text appraisal.
-
-### Rafferty and Rajan, 2026
-
-*Limitations of public chest radiography datasets for artificial intelligence: label quality, domain shift, bias and evaluation challenges.* Philosophical Transactions A, 384, 20250129. [DOI](https://doi.org/10.1098/rsta.2025.0129) · [Institutional publication record](https://www.research.ed.ac.uk/en/publications/limitations-of-public-chest-radiography-datasets-for-artificial-i/).
-
-This related work places public-data limitations alongside model evaluation. The journal record was confirmed during this update; the repository records abstract-level reading. Its relevance is provenance, labels and shift. It is not an orthopaedic classifier benchmark, and a bibliographic confirmation does not replace full-method review.
-
-**Theme conclusion:** the question “what did the model learn?” is already established. Our contribution must be a carefully specified test of that question on our benchmark, not a claim to have invented shortcut learning.
-
-## 3. Theme B — generalization and cross-source evaluation
-
-Patwary and Toma's 2026 fracture-classification paper investigates cross-dataset failure between paediatric and mixed-age radiographs. Its publisher text reports a different endpoint from our joint labels. The useful connection is that internal success and external behaviour must be reported separately. [Primary article](https://doi.org/10.3390/app16146853).
-
-Hrubý and colleagues' 2024 cross-center musculoskeletal fracture-validation preprint is relevant to testing beyond the training center. However, hospital-center separation and public-source separation are not identical. The repository records abstract-only access. [Primary record](https://doi.org/10.1101/2024.01.17.24301244).
-
-Kutbi, Shaban and Khogeer's 2026 work considers cross-anatomy abnormality detection using radiographs. It is useful for discussing whether visual similarities help transfer across anatomical regions. OrthoTrace instead predicts the region itself, so this is adjacent work rather than a directly comparable score. [Primary article](https://www.nature.com/articles/s41598-026-37516-9).
-
-OpenMIBOOD, by Gutbrod and colleagues, evaluates OOD methods in medical imaging and distinguishes shifted, near-OOD and far-OOD settings. It motivates keeping our unknown-joint evaluation separate from ordinary three-class accuracy. The arXiv record was confirmed; this update does not independently confirm the conference-venue wording in the old repository bibliography. [Primary preprint](https://arxiv.org/abs/2503.16247).
-
-**Theme conclusion:** source-held-out evaluation and explicit task definitions are necessary. Our 55-image FracAtlas subset is an informative source-decoupled test, but it is not a substitute for independent hospital validation.
-
-## 4. Theme C — anatomy, projection and data cleanliness
-
-Mitsuyama and colleagues study body-part and projection/orientation classification in a multi-institutional setting. Fink and colleagues study projection and body-side classification in musculoskeletal radiographs. Langer and colleagues consider anatomical-region classification and real-world data cleanliness.
-
-These papers show that “classifying an X-ray” is not one task. Body part, projection, side, abnormality and implant identity are different labels. View differences and label cleanliness can affect our results, especially for the provisional FracAtlas knee subset. Their datasets and targets should be compared in a survey table; their reported scores should not be presented as interchangeable with our balanced accuracy.
-
-## 5. Theme D — implant identification as related application work
-
-THA-AID, the knee-implant external-validation work by Karnuta and colleagues, and Gong and colleagues' hip-implant work concern implant-related identification applications. HipXNet concerns hip-implant loosening.
-
-These papers explain why implant X-rays are a practical imaging domain. They do not mean OrthoTrace implements the same tasks. The original benchmark outputs Hip, Knee or Shoulder. The current workbench also has an expanded model that scores Hand, Leg and Elbow. We have not trained manufacturer/model labels or a loosening endpoint. Implant presence is associated with some dataset sources, but our source-held-out comparisons do not isolate a causal implant effect.
-
-## 6. Theme E — data and model foundations
-
-FracAtlas provides multi-region musculoskeletal radiographs and annotations for its original tasks. In our benchmark it is the only source containing all three target joints. Our provisional knee selection requires its own validation; the original dataset paper does not validate labels later assigned by our project.
-
-ConvNeXt supplies a modern convolutional architecture used in our comparisons. EfficientNet and Swin are additional established backbones. These architecture papers justify model selection, but ImageNet results do not establish robustness on our sources.
-
-## 7. Comparison of 17 recent bibliography entries
-
-The numbered references below correspond to the original repository's reference numbers. Years are the recorded publication/preprint years. The working recent window is calendar years 2022–2026; confirm the evaluator's precise five-year rule. A preprint/journal pair counts as one work, not two.
-
-| Repository ref | Work and year | Method / data / task in simple terms | Why we use it | Reading limit |
+| S. No | Reference | Data / task | Main finding | Limitation relevant to this project |
 |---|---|---|---|---|
-| 1 | Hill et al., 2024 | Medical-image CNN shortcut investigation | Closest shortcut-learning motivation | Repository full-text record; primary full text located |
-| 2 | Ly et al., 2024 | Bias-transform approach to examining generalization | Compare their indirect shortcut test with our explicit source controls | Repository page read; primary article located |
-| 4 | Rafferty & Rajan, 2025 preprint / 2026 journal | Public chest-data label, bias and shift discussion | Dataset provenance and evaluation limits | Journal identity confirmed; abstract-level review |
-| 5 | Hajishafiezahramini et al., 2026 | Frozen mammography features, source-origin diagnostic and patient-level splits | Why source signatures may survive preprocessing | Preprint and abstract confirmed; full-text review pending |
-| 6 | Patwary & Toma, 2026 | Cross-dataset radiograph fracture classification | Internal versus shifted evaluation | Publisher text checked; task-specific detailed replication not performed |
-| 7 | Hrubý et al., 2024 | Cross-center musculoskeletal fracture validation | External-validation design | Preprint, abstract only in repository |
-| 8 | Kutbi et al., 2026 | Cross-anatomy abnormality detection | Anatomy similarity and transfer | Publisher record/text located; not our prediction endpoint |
-| 9 | Mitsuyama et al., online 2025 / volume 2026 | Multi-institution body-part/projection classification | Related anatomy classification and external settings | Repository records full-text reading |
-| 10 | Fink et al., 2024 | Projection and body-side classification | View variation and precise label definition | Repository page read |
-| 11 | Langer et al., 2024 | Self-supervised anatomical-region/data-quality study | Label and dataset cleanliness | Preprint, abstract only |
-| 12 | Rouzrokh et al., THA-AID, 2024 | Hip-implant identification with uncertainty/outlier analysis | Real application context, different target | Abstract only |
-| 13 | Karnuta et al., 2023 | Multi-center knee-implant identification validation | Why external evaluation matters | Bibliographic match/abstract only |
-| 14 | Gong et al., 2022 | AI-based hip-implant identification | Implant application context | Repository page read |
-| 15 | Gutbrod et al., OpenMIBOOD, 2025 | Medical OOD benchmarks and post-hoc methods | Distinguish unknown inputs from classification | arXiv verified; conference version not confirmed here |
-| 17 | Rahman et al., HipXNet, 2022 | Hip-implant loosening classification | Data/task provenance; a different endpoint | Metadata only; full-text review pending |
-| 18 | Abedeen et al., FracAtlas, 2023 | Multi-region fracture dataset and annotations | Source data and target-region selection | Dataset/source record; not validation of our added knee labels |
-| 28 | Liu et al., ConvNeXt, 2022 | Modern convolutional architecture | Established comparison backbone | Official author repository/arXiv confirmed; not an orthopaedic robustness result |
+| 1 | Hill et al. [1] | Knee radiographs; shortcut investigation | Networks predict unseen attributes through confounders; pre-processing did not remove them | Different target; internal validation |
+| 2 | Ly et al. [2] | Several modalities; shortcuts and generalisation | Acquisition shortcuts help internal accuracy and weaken transfer; structure disruption probes them | Indirect test; no explicit source holdout for joint recognition |
+| 3 | Rafferty and Rajan [4] | Public chest radiograph datasets | Label quality, shift and bias limit evaluation | Chest, not orthopaedic; abstract-level reading |
+| 4 | Hajishafiezahramini et al. [5] | Mammography, cross-dataset | Dataset origin stays decodable after consistent pre-processing | Preprint; other modality and target |
+| 5 | Patwary and Toma [6] | Radiograph fracture classification, paediatric vs mixed-age | Failure under shift in both directions | Fracture endpoint; abstract only |
+| 6 | Hrubý et al. [7] | Cross-centre fracture detection | Cross-centre validation is feasible and needed | Preprint; centre separation is not public-source separation |
+| 7 | Kutbi et al. [8] | Bone abnormality detection across regions | Anatomical similarity can aid transfer | Abnormality, not region recognition |
+| 8 | Mitsuyama et al. [9] | Body-part and projection classification, multi-institution | High accuracy across institutions; label-quality use | No shortcut or source-decoupled test for joints |
+| 9 | Fink et al. [10] | Projection and body-side classification | View and side are separate learnable labels | Different target |
+| 10 | Langer et al. [11] | Anatomical-region classification | Real-world labels are not clean | Preprint; abstract only |
+| 11 | Rouzrokh et al. (THA-AID) [12] | Hip-implant identification | Implant detection with uncertainty and outlier flags | Different target; abstract only |
+| 12 | Karnuta et al. [13] | Knee-implant identification | Multi-centre external validation at scale | Implant identity; abstract only |
+| 13 | Gong et al. [14] | Hip-arthroplasty implant identification | Implants can be identified automatically | No source shift analysis |
+| 14 | Gutbrod et al. (OpenMIBOOD) [15] | Medical OOD benchmark | OOD methods behave differently by shift type | Benchmark, not our task; venue unconfirmed |
+| 15 | Rahman et al. (HipXNet) [17] | Hip-implant loosening | Provenance of the Kaggle hip source | Metadata only; different endpoint |
+| 16 | Abedeen et al. (FracAtlas) [18] | Multi-region radiograph dataset | Source of the only three-joint data | Fracture labels; our knee labels are provisional |
+| 17 | Liu et al. (ConvNeXt) [28] | ImageNet architecture | Modern convolutional baseline | No medical robustness evidence |
+| 18 | Hinterwimmer et al. (SAM-X) [32] | 28-category musculoskeletal sorting | Broad anatomy sorting is feasible | Our question is narrower: source transfer |
+| 19 | Yao et al. (BTXRD) [33] | Bone-tumour radiograph dataset | Public data with anatomy tags | Tumour labels; 54-image external subset |
+| 20 | Patel et al. [34] | Orthopaedic implant identification | Implants can be identified from radiographs | 2021 (outside the window); different task |
+| 21 | Cooke et al. (RoentMod) [35] | Chest radiographs, synthetic modification | Intervention-based shortcut testing | Chest; synthetic edits |
 
-## 8. Critical analysis: what should not be compared directly?
+## 4. Analysis
 
-1. **Different targets:** fracture detection, implant-brand recognition and joint recognition are not equivalent tasks.
-2. **Different splits:** patient, image, center and source splits answer different questions.
-3. **Different metrics:** accuracy, balanced accuracy and AUROC are not interchangeable.
-4. **Different populations/views:** paediatric hips, implant close-ups and native knees differ beyond just the class name.
-5. **Different evidence levels:** a full-text experiment, abstract-only record and dataset catalogue require different strength of interpretation.
+**Evaluation protocol.** Studies of anatomy and implant recognition [9, 10, 12–14] report performance on internal splits or on multi-centre external validation. Few separate pooled random evaluation from a test on an entire unseen source, and the dataset-quality warnings [4, 11] suggest that even the static numbers may be inflated.
 
-A comparison table should expose these differences rather than declaring the paper with the largest percentage the winner. We do not provide invented numerical literature baselines for incompatible tasks.
+**Task definition.** Body part [9], projection and side [10], abnormality [8], implant identity [12–14] and implant loosening [17] are different targets. Accuracy, balanced accuracy and AUROC are also not interchangeable. A comparison that ranks papers by their largest percentage would be misleading, so this project does not borrow numerical baselines from incompatible tasks.
 
-## 9. The gap and how our methodology follows from it
+**Shortcut evidence.** The shortcut literature [1–3, 5, 24, 25, 35] shows the problem exists in other tasks and modalities, using different test designs: attribute prediction [1], structure disruption [2], origin decoding [5], marker exchange [25] and synthetic modification [35]. We found no study that combines anatomy-free baselines, an explicit source holdout and a paired border intervention for orthopaedic joint recognition. The search was targeted, so this does not prove that none exists.
 
-**Bounded gap:** characterize pooled-versus-source-decoupled Hip/Knee/Shoulder recognition on this six-source benchmark, with anatomy-free baselines and uncertainty analysis.
+**Evidence level.** A full-text experiment, an abstract-only record and a dataset catalogue deserve different strength of interpretation. References read only at abstract level (see Section 8) are used for motivation, not for numerical comparison.
 
-| Literature lesson | Decision in OrthoTrace |
-|---|---|
-| Models can exploit unintended clues | Test dimensions, metadata, borders and other limited features |
-| Internal success may not transfer | Separate pooled, FracAtlas-held-out and leave-one-source-out protocols |
-| Related images can leak across partitions | Use available groups/reference identifiers/duplicate clusters in splitting |
-| Architecture alone does not solve dataset bias | Compare RF, frozen probes and fine-tuned backbones |
-| Confidence can fail under shift | Examine calibration, selective prediction and OOD scores separately |
-| Results need traceable evidence | Preserve predictions, manifests, checkpoint hashes and analysis records |
-| Task definitions matter | Keep joint recognition separate from implant identity and diagnosis |
+## 5. Research gap
 
-This is a focused empirical/software contribution. The search was targeted and cannot prove that no related prior study exists.
+1. **G1.** Pooled accuracy leaves source transfer unclear: few studies of orthopaedic region recognition report how much a score changes when a whole source is excluded.
+2. **G2.** A high accuracy leaves the cue ambiguous: a network may rely on framing, borders, dimensions or file properties instead of anatomy, and these are rarely tested with anatomy-free baselines and matched interventions.
+3. **G3.** Algorithm rankings can change with the cohort, which pooled scores hide.
+4. **G4.** Aggregate metrics can hide label conflicts and single-image failures, and per-image disagreement is rarely exposed to a reviewer.
 
-## 10. Connection to our measured findings
+## 6. Problem statement and objectives
 
-Our saved primary-model pooled balanced accuracies are approximately 0.993–1.000, compared with 0.498–0.686 in the source-decoupled setting. The dimension-only RF baseline drops from 0.9713 to 0.3333. These are **our saved benchmark results**, not numbers borrowed from the cited papers.
+**Problem statement.** A model that recognises hip, knee or shoulder radiographs can score near-perfectly on pooled public data because the joint label is tied to the data source. Imaging research teams need to know how much of that score survives a new source, which image properties explain it, and which individual predictions deserve suspicion.
 
-They support the usefulness of source-controlled evaluation in this collection. They do not establish hospital-level performance or implant causality. One multi-joint held-out source, provisional knee labels and limited training remain important limitations. The hip/shoulder-only sensitivity analysis gives a smaller gap, which must also be shown.
+**Research questions**
 
-## 11. Older foundational references
+- **RQ1.** How much does pooled evaluation overstate Hip/Knee/Shoulder recognition compared with a source-decoupled test?
+- **RQ2.** Can image properties unrelated to anatomy reproduce the pooled accuracy?
+- **RQ3.** How do models behave when an implant-bearing source is held out, and is their confidence informative?
+- **RQ4.** Can disagreement and shortcut cues be made inspectable on individual X-rays?
 
-These works remain useful but should not be counted as 2022–2026 recent papers:
+**Objectives**
 
-- Badgeley et al., 2019: hip-fracture prediction and confounding. [DOI](https://doi.org/10.1038/s41746-019-0105-1).
-- Geirhos et al., 2020: shortcut learning in neural networks. [DOI](https://doi.org/10.1038/s42256-020-00257-z).
-- Zech et al., 2018: variable cross-source chest-X-ray generalization. [DOI](https://doi.org/10.1371/journal.pmed.1002683).
-- DeGrave et al., 2021: radiographic COVID-19 shortcuts. [DOI](https://doi.org/10.1038/s42256-021-00338-7).
-- Tan & Le, 2019: EfficientNet architecture. [arXiv](https://arxiv.org/abs/1905.11946).
-- Liu et al., 2021: Swin Transformer. [arXiv](https://arxiv.org/abs/2103.14030).
-- Guo et al., 2017: calibration and temperature scaling. [arXiv](https://arxiv.org/abs/1706.04599).
-- Holm, 1979: multiple-test adjustment. [DOI](https://doi.org/10.2307/4615733).
+| S. No | Objective | Metric of evaluation |
+|---|---|---|
+| O1 | Quantify the pooled versus source-decoupled gap on a leakage-audited six-source benchmark | Balanced-accuracy gap above 0.10 for at least 4 of 5 primary models (Holm-adjusted clustered bootstrap, p < 0.05) |
+| O2 | Test anatomy-free shortcuts | Balanced accuracy of dimensions-only and metadata-only random forests, pooled versus decoupled; prediction change under a paired border intervention against a within-source control |
+| O3 | Compare model families under frozen protocols | Balanced accuracy for random forests, linear probes and fine-tuned networks; six classical classifiers on shared features with source holdout |
+| O4 | Characterise reliability under source shift | Leave-one-source-out balanced accuracy, expected calibration error, selective prediction and unknown-joint AUROC |
+| O5 | Make behaviour inspectable in a workbench | Four checkpoint predictions, six region scores, Grad-CAM and a shortcut probe per image; median CPU latency; passing regression tests |
 
-## 12. What remains to meet the highest literature criterion?
+## 7. Proposed methodology
 
-The repository contains a useful recent starting set, but this document does not certify 15 fully reviewed recent journal/conference papers. Obtain the remaining full texts; confirm venue and version; record task, data, split, model, metric, findings and limitations; then add a team-written critical comparison. Do not count preprints as confirmed conference publications, double-count versions or claim full-text reading from metadata.
+- **Data and pre-processing.** Six public sources (4,427 benchmark images, 657 in a sealed test partition) with group-aware splits; images converted to greyscale, resized to 160 × 160 and ImageNet-normalised.
+- **Protocols.** Pooled random evaluation, source-decoupled evaluation (train without FracAtlas, test on FracAtlas) and leave-one-source-out evaluation; the analysis plan, code and training recipes are frozen and hash-recorded before the test set is opened.
+- **Models.** Random forests on anatomy-free feature groups, logistic probes on frozen EfficientNet-B3, ConvNeXt-T and Swin-T embeddings, and fine-tuned EfficientNet-B3 and Swin-T; six classical classifiers on PCA-reduced EfficientNet-B3 features.
+- **Shortcut tests.** Dimensions-only and metadata-only models, a paired border intervention that keeps centre pixels fixed, and an anatomy-free shortcut probe in the workbench.
+- **Evaluation.** Balanced accuracy with clustered paired-bootstrap intervals, calibration, selective prediction, OOD detection and per-image error analysis.
+- **Tools and feasibility.** Python, scikit-learn, PyTorch, FastAPI and a static web front end; all components are open source and run on a laptop CPU.
+- **Known limitations.** Few independent sources, a small source-decoupled test set, provisional knee labels, compute-limited fine-tuning and no clinical validation.
 
-Institutional citation style and similarity requirements also need confirmation. Source existence, scientific quality, full-text review and plagiarism/originality checking are separate checks.
+## 8. References
 
-## 13. Full recent references
+Verification tags: **[C]** DOI, title, first author and year confirmed against Crossref; **[X]** confirmed against the arXiv record; **[A]** confirmed to exist, abstract only read; **[U]** cited from background knowledge, not verified in this project. Entries [32]–[35] were confirmed against Crossref for this survey; reading depth for them is citation and abstract level only.
 
-The following entries retain the original repository's author/title information and reading-status notes. Status describes that record, not a new full-text review of every paper during this update.
+[1] Hill BG, Koback FL, Schilling PL. The risk of shortcutting in deep learning algorithms for medical imaging research. *Sci Rep* 2024;14:29224. doi:10.1038/s41598-024-79838-6 [C; abstract read]
 
+[2] Ly CO, Unnikrishnan B, Tadic T, et al. Shortcut learning in medical AI hinders generalization: method for estimating AI model generalization without external data. *npj Digit Med* 2024. doi:10.1038/s41746-024-01118-4 [C; page read]
 
-**Repository reference 1.** Hill BG, Koback FL, Schilling PL. The risk of shortcutting in deep learning algorithms for medical imaging research. *Sci Rep* 2024;14:29224. doi:10.1038/s41598-024-79838-6 [C; full text read via PMC] [Primary identifier](https://doi.org/10.1038/s41598-024-79838-6).
+[3] Badgeley MA, Zech JR, Oakden-Rayner L, et al. Deep learning predicts hip fracture using confounding patient and healthcare variables. *npj Digit Med* 2019. doi:10.1038/s41746-019-0105-1 [C; page read]
 
-**Repository reference 2.** Ly CO, Unnikrishnan B, Tadic T, et al. Shortcut learning in medical AI hinders generalization: method for estimating AI model generalization without external data. *npj Digit Med* 2024. doi:10.1038/s41746-024-01118-4 [C; page read] [Primary identifier](https://doi.org/10.1038/s41746-024-01118-4).
+[4] Rafferty A, Rajan A. Limitations of public chest radiography datasets for artificial intelligence: label quality, domain shift, bias and evaluation challenges. arXiv:2509.15107 (2025); *Philos Trans R Soc A* 2026, doi:10.1098/rsta.2025.0129 [X, C; abstract read]
 
-**Repository reference 4.** Rafferty A, Rajan A. Limitations of public chest radiography datasets for artificial intelligence: label quality, domain shift, bias and evaluation challenges. arXiv:2509.15107 (2025); *Philos Trans R Soc A* 2026, doi:10.1098/rsta.2025.0129 [X, C; abstract read] [Primary identifier](https://doi.org/10.1098/rsta.2025.0129).
+[5] Hajishafiezahramini P, Hamilton M, Meruvia-Pastor O, Kendall E. Dataset-origin signatures and shortcut learning in screening mammography AI: a cross-dataset case study. arXiv:2607.15416 (2026) [X; abstract read]
 
-**Repository reference 5.** Hajishafiezahramini P, Hamilton M, Meruvia-Pastor O, Kendall E. Dataset-origin signatures and shortcut learning in screening mammography AI: a cross-dataset case study. arXiv:2607.15416 (2026) [X; abstract read] [Primary identifier](https://arxiv.org/abs/2607.15416).
+[6] Patwary R, Toma M. Bidirectional domain shift failure in radiograph fracture classification across out-of-distribution pediatric and mixed-age multi-region data. *Appl Sci* 2026;16(14):6853. doi:10.3390/app16146853 [C; abstract only]
 
-**Repository reference 6.** Patwary R, Toma M. Bidirectional domain shift failure in radiograph fracture classification across out-of-distribution pediatric and mixed-age multi-region data. *Appl Sci* 2026;16(14):6853. doi:10.3390/app16146853 [C; abstract only] [Primary identifier](https://doi.org/10.3390/app16146853).
+[7] Hrubý R, Kvak D, Dandár J, Atakhanova A, Misař M, Dufek D. Cross-center validation of deep learning model for musculoskeletal fracture detection in radiographic imaging: a feasibility study. medRxiv 2024. doi:10.1101/2024.01.17.24301244 [C; preprint abstract only]
 
-**Repository reference 7.** Hrubý R, Kvak D, Dandár J, Atakhanova A, Misař M, Dufek D. Cross-center validation of deep learning model for musculoskeletal fracture detection in radiographic imaging: a feasibility study. medRxiv 2024. doi:10.1101/2024.01.17.24301244 [C; preprint abstract only] [Primary identifier](https://doi.org/10.1101/2024.01.17.24301244).
+[8] Kutbi M, Shaban K, Khogeer A. Exploring anatomical similarity in zero-shot learning for bone abnormality detection. *Sci Rep* 2026. doi:10.1038/s41598-026-37516-9 [C; abstract/page read]
 
-**Repository reference 8.** Kutbi M, Shaban K, Khogeer A. Exploring anatomical similarity in zero-shot learning for bone abnormality detection. *Sci Rep* 2026. doi:10.1038/s41598-026-37516-9 [C; abstract/page read] [Primary identifier](https://doi.org/10.1038/s41598-026-37516-9).
+[9] Mitsuyama Y, Takita H, Walston SL, et al. Deep learning models for radiography body-part classification and chest radiograph projection/orientation classification: a multi-institutional study. *Eur Radiol* 2026;36:2576–2590 (online 2025). doi:10.1007/s00330-025-12053-7 [C; page read]
 
-**Repository reference 9.** Mitsuyama Y, Takita H, Walston SL, et al. Deep learning models for radiography body-part classification and chest radiograph projection/orientation classification: a multi-institutional study. *Eur Radiol* 2026;36:2576–2590 (online 2025). doi:10.1007/s00330-025-12053-7 [C, F] [Primary identifier](https://doi.org/10.1007/s00330-025-12053-7).
+[10] Fink A, Tran H, Reisert M, et al. A deep learning approach for projection and body-side classification in musculoskeletal radiographs. *Eur Radiol Exp* 2024;8:23. doi:10.1186/s41747-023-00417-x [C; page read]
 
-**Repository reference 10.** Fink A, Tran H, Reisert M, et al. A deep learning approach for projection and body-side classification in musculoskeletal radiographs. *Eur Radiol Exp* 2024;8:23. doi:10.1186/s41747-023-00417-x [C; page read] [Primary identifier](https://doi.org/10.1186/s41747-023-00417-x).
+[11] Langer S, Ritter J, Braren R, Rueckert D, Hager P. Self-supervised radiograph anatomical region classification – how clean is your real-world data? arXiv:2412.15967 (2024) [X; abstract read]
 
-**Repository reference 11.** Langer S, Ritter J, Braren R, Rueckert D, Hager P. Self-supervised radiograph anatomical region classification – how clean is your real-world data? arXiv:2412.15967 (2024) [X; abstract read] [Primary identifier](https://arxiv.org/abs/2412.15967).
+[12] Rouzrokh P, Mickley JP, Khosravi B, et al. THA-AID: deep learning tool for total hip arthroplasty automatic implant detection with uncertainty and outlier quantification. *J Arthroplasty* 2024. doi:10.1016/j.arth.2023.09.025 [C; abstract read]
 
-**Repository reference 12.** Rouzrokh P, Mickley JP, Khosravi B, et al. THA-AID: deep learning tool for total hip arthroplasty automatic implant detection with uncertainty and outlier quantification. *J Arthroplasty* 2024. doi:10.1016/j.arth.2023.09.025 [C; abstract read] [Primary identifier](https://doi.org/10.1016/j.arth.2023.09.025).
+[13] Karnuta JM, et al. Artificial intelligence for automated implant identification in knee arthroplasty: a multicenter external validation study exceeding 3.5 million plain radiographs. *J Arthroplasty* 2023. doi:10.1016/j.arth.2023.03.039 [C, bibliographic match; abstract only]
 
-**Repository reference 13.** Karnuta JM, et al. Artificial intelligence for automated implant identification in knee arthroplasty: a multicenter external validation study exceeding 3.5 million plain radiographs. *J Arthroplasty* 2023. doi:10.1016/j.arth.2023.03.039 [C, bibliographic match; abstract only] [Primary identifier](https://doi.org/10.1016/j.arth.2023.03.039).
+[14] Gong Z, Fu Y, He M, Fu X. Automated identification of hip arthroplasty implants using artificial intelligence. *Sci Rep* 2022;12:12179. doi:10.1038/s41598-022-16534-3 [C; page read]
 
-**Repository reference 14.** Gong Z, Fu Y, He M, Fu X. Automated identification of hip arthroplasty implants using artificial intelligence. *Sci Rep* 2022;12:12179. doi:10.1038/s41598-022-16534-3 [C; page read] [Primary identifier](https://doi.org/10.1038/s41598-022-16534-3).
+[15] Gutbrod M, Rauber D, Weber Nunes D, Palm C. OpenMIBOOD: open medical imaging benchmarks for out-of-distribution detection. *CVPR* 2025; arXiv:2503.16247 [X; abstract read]
 
-**Repository reference 15.** Gutbrod M, Rauber D, Weber Nunes D, Palm C. OpenMIBOOD: open medical imaging benchmarks for out-of-distribution detection. arXiv preprint 2025; conference venue not independently confirmed in this update; arXiv:2503.16247 [X; abstract read] [Primary identifier](https://arxiv.org/abs/2503.16247).
+[16] Rajpurkar P, et al. MURA: large dataset for abnormality detection in musculoskeletal radiographs. arXiv:1712.06957 (2017) [X; not read beyond abstract]
 
-**Repository reference 17.** Rahman T, et al. HipXNet: deep learning approaches to detect aseptic loosening of hip implants using X-ray images. *IEEE Access* 2022. doi:10.1109/ACCESS.2022.3173424 [C, bibliographic match; not read] [Primary identifier](https://doi.org/10.1109/ACCESS.2022.3173424).
+[17] Rahman T, et al. HipXNet: deep learning approaches to detect aseptic loosening of hip implants using X-ray images. *IEEE Access* 2022. doi:10.1109/ACCESS.2022.3173424 [C, bibliographic match; not read]
 
-**Repository reference 18.** Abedeen I, et al. FracAtlas: a dataset for fracture classification, localization and segmentation of musculoskeletal radiographs. *Sci Data* 2023. doi:10.1038/s41597-023-02432-4; data: figshare doi:10.6084/m9.figshare.22363012 (CC BY 4.0) [C; dataset page read] [Primary identifier](https://doi.org/10.1038/s41597-023-02432-4).
+[18] Abedeen I, et al. FracAtlas: a dataset for fracture classification, localization and segmentation of musculoskeletal radiographs. *Sci Data* 2023. doi:10.1038/s41597-023-02432-4; data: figshare doi:10.6084/m9.figshare.22363012 (CC BY 4.0) [C; dataset page read]
 
-**Repository reference 28.** Liu Z, Mao H, Wu C-Y, et al. A ConvNet for the 2020s. *CVPR* 2022; arXiv:2201.03545 [X] [Primary identifier](https://arxiv.org/abs/2201.03545).
+[19] Shoulder implant X-ray manufacturer classification. UCI Machine Learning Repository, doi:10.24432/C5F893 (CC BY 4.0) [dataset page read]
 
+[20] Gornale S, Patravali P. Digital knee X-ray images. *Mendeley Data* 2020. doi:10.17632/t9ndx37v5h.1 (CC BY 4.0) [dataset page read]
 
-## Paired border intervention extension
+[21] Knee osteoarthritis severity grading dataset (derived from the Osteoarthritis Initiative). *Mendeley Data*, doi:10.17632/56rmx5bjcr.1; Kaggle copy "shashwatwork/knee-osteoarthritis-dataset-with-severity" [licence as reported by hosts]
 
-**SAM-X** categorized musculoskeletal radiographs into 28 anatomical regions. It establishes broad anatomy sorting as prior work and supplies a closer comparison than implant-brand classification. [Primary article](https://pmc.ncbi.nlm.nih.gov/articles/PMC9935683/)
+[22] Acetabular-vision hip developmental dysplasia (AV-DDH) dataset. *Mendeley Data*, doi:10.17632/4gvcb6gmh2.2 [host page read; export config lists "Private"]
 
-**DeGrave, Janizek and Lee** exchanged laterality markers on chest radiographs and compared the shifts with random patches of the same size. This supports intervention-based shortcut testing and provides a precedent for our matched control. The 2021 paper is foundational context outside the current five-year rubric window. [Primary article](https://doi.org/10.1038/s42256-021-00338-7)
+[23] Geirhos R, Jacobsen J-H, Michaelis C, et al. Shortcut learning in deep neural networks. *Nat Mach Intell* 2020;2:665–673 [U: the DOI lookup failed in this project]
 
-**RoentMod** used text-guided synthetic modifications to study shortcuts in chest X-ray models. It provides a recent intervention comparison. OrthoTrace uses four scalar intensities to produce a reproducible border and verifies that every center pixel remains equal. [Primary article](https://www.nature.com/articles/s41746-026-02497-6)
+[24] Zech JR, Badgeley MA, Liu M, et al. Variable generalization performance of a deep learning model to detect pneumonia in chest radiographs: a cross-sectional study. *PLoS Med* 2018;15:e1002683. doi:10.1371/journal.pmed.1002683 [C]
 
-Our added experiment compares within-source and cross-source frames derived from donors with the same joint label. The 41-image exploratory pilot found that one checkpoint changes predictions after border edits. Its estimated additional cross-source effect was 2.4 percentage points and its interval reached zero. The rubric's recent-paper count still requires a final venue, publication-date and reading-depth audit before submission.
+[25] DeGrave AJ, Janizek JD, Lee S-I. AI for radiographic COVID-19 detection selects shortcuts over signal. *Nat Mach Intell* 2021;3:610–619. doi:10.1038/s42256-021-00338-7 [C]
+
+[26] Tan M, Le QV. EfficientNet: rethinking model scaling for convolutional neural networks. *ICML* 2019; arXiv:1905.11946 [X]
+
+[27] Liu Z, Lin Y, Cao Y, et al. Swin Transformer: hierarchical vision transformer using shifted windows. *ICCV* 2021; arXiv:2103.14030 [X]
+
+[28] Liu Z, Mao H, Wu C-Y, et al. A ConvNet for the 2020s. *CVPR* 2022; arXiv:2201.03545 [X]
+
+[29] Guo C, Pleiss G, Sun Y, Weinberger KQ. On calibration of modern neural networks. *ICML* 2017; arXiv:1706.04599 [X, title confirmed]
+
+[30] Holm S. A simple sequentially rejective multiple test procedure. *Scand J Stat* 1979;6:65–70 [U: not found in Crossref in this project]
+
+[31] Removed from the project bibliography because the source could not be verified; the number is kept so that numbering matches the manuscript.
+
+[32] Hinterwimmer et al. SAM-X: sorting algorithm for musculoskeletal x-ray radiography. *Eur Radiol* 2023;33:1537–1544 (online 2022). doi:10.1007/s00330-022-09184-6 [C; citation level]
+
+[33] Yao et al. A radiograph dataset for the classification, localization, and segmentation of primary bone tumors. *Sci Data* 2025;12:88. doi:10.1038/s41597-024-04311-y [C; citation level]
+
+[34] Patel et al. Automated identification of orthopedic implants on radiographs using deep learning. *Radiol Artif Intell* 2021;3:e200183. doi:10.1148/ryai.2021200183 [C; citation level]
+
+[35] Cooke et al. RoentMod: a synthetic chest X-ray modification model to identify and correct image interpretation model shortcuts. *npj Digit Med* 2026;9:324. doi:10.1038/s41746-026-02497-6 [C; citation level]
