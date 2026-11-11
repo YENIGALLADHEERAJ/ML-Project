@@ -53,8 +53,8 @@ def menu(cur):
         return f'<li><a href="{h}"{c}{k}>{t}</a></li>'
     def dd(label, items): return f'<li><details><summary>{label} ▾</summary><div class="drop">' + "".join('<a href="%s"%s>%s<small>%s</small></a>' % (h, AC if h == cur else "", t, d) for h, t, d in items) + '</div></details></li>'
     anchor = '' if cur == 'index.html' else 'index.html'
-    project_links = [('context.html','Implants & imaging','The medical context and model task.'), ('contribution.html','Our contribution','Existing work versus what we built.')] + STUDY + PROJ
-    return ('<ul class="menu" id="menu">' + a(anchor+'#decides','How it works') + a(anchor+'#lab','The Lab') + a(anchor+'#insight','Insight') + dd('Project',project_links) + a('demo.html','Run an X-ray',cta=True) + '</ul>')
+    project_links = [('context.html','Implants & imaging','Orthopaedic implants and what the model scores.'), ('timeline.html','Implant timeline','Explore four historical implant designs.'), ('contribution.html','Project contribution','Methods, experiments and the comparison tool.')] + STUDY + PROJ
+    return ('<ul class="menu" id="menu">' + a(anchor+'#workflow','X-ray workflow') + a(anchor+'#model-comparison','Compare models') + a('results.html','Benchmark results') + dd('Project resources',project_links) + a('demo.html','Open X-ray demo',cta=True) + '</ul>')
 
 
 ORDER = [("index.html", "Home"), ("demo.html", "X-ray demo"), ("robustness.html", "Robustness"), ("results.html", "Results"), ("research.html", "Research"), ("datasets.html", "Datasets"), ("methodology.html", "Methodology"), ("limitations.html", "Limitations"), ("paper.html", "Paper"), ("reproducibility.html", "Reproducibility"), ("about.html", "About")]
