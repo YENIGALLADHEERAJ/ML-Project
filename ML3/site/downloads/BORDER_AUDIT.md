@@ -38,7 +38,7 @@ This is an exploratory reuse of the existing study holdout. The protocol choices
 
 An independent replication should freeze the protocol, use clinician-reviewed test labels from additional sources, repeat across training seeds and ring widths, and report the sensitivity of the result to the donor draw. Before submission, check dataset and checkpoint redistribution terms, finish the author contribution statements and obtain any required institutional review. Publication acceptance and literature priority have not been established.
 
-## Reproduction and rubric evidence
+## Reproduction and evidence
 
 Run `python ML3/scripts/border_audit.py` from the workspace with the project's Python environment and existing archived development/test arrays. The script produces a machine-readable report with per-image probabilities, donor manifest identifiers, frame parameters and checkpoint hashes under `ML3/artifacts/border-audit`. The website shows two representative inputs and their saved scores. The feature runs without additional model requests.
 
