@@ -93,4 +93,4 @@ Shared inference is serialized because Grad-CAM mutates hooks/gradients. Multipl
 6. Historical training scripts and manifests retain `E:/ML3` paths. They were deliberately preserved to avoid changing frozen code. A full portable retraining migration would need a separately versioned protocol and data-path mapping. No training, test unsealing, clinician consensus or new clinical validation was performed.
 7. Clean original-runtime installation, Docker deployment, load/performance testing and real user testing remain unverified.
 
-See `RUBRIC_AUDIT.md`, `DEMO_AND_VIVA.md` and `LITERATURE_MATRIX.md` for evaluation preparation.
+See `TEAM_CHECKLIST.md`, `DEMO_AND_VIVA.md` and `LITERATURE_MATRIX.md` for presentation and submission preparation.
