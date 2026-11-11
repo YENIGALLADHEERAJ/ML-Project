@@ -31,6 +31,25 @@ The distinctive part is the workflow. A reviewer can take one radiograph, compar
 
 The project’s strongest claim is about **inspectability and source-aware evaluation on this benchmark**. Establishing a best-in-class anatomy model would require a shared evaluation cohort, aligned labels and metrics, and direct comparison with prior systems. Clinical usefulness would also require independent clinician labels and a fresh test representative of the intended setting. Our current evidence supports an academic tool for model and dataset review.
 
+## Research gaps, objectives, and evidence
+
+The [classmate NIDS project](https://github.com/jaslyn-j/Concept-drift-detecting_NIDS) informed this section's structure. Its controlled traffic shifts and OrthoTrace's source holdouts address different prediction tasks. In OrthoTrace, source shift means a change in the image dataset or acquisition context. The workbench evaluates fixed checkpoints and has no streaming drift detector or automatic retraining trigger.
+
+| Gap addressed in our project | Objective | Method and evidence |
+|---|---|---|
+| **G1. Pooled accuracy leaves source transfer unclear.** Prior studies show medical models can exploit acquisition cues. | Measure how much a score changes when a source is excluded. | Compare pooled and source-decoupled protocols, then compare the checkpoints on identical FracAtlas test images in the same-image control. [Saved benchmark](ML3/site/data/results.json) |
+| **G2. A high accuracy score leaves the cue ambiguous.** A network may rely on framing, borders, or dimensions. | Test cues that carry little or no anatomical content. | Fit a dimensions-only Random Forest and run a paired border intervention with matched within-source controls. [Border experiment](ML3/site/downloads/BORDER_AUDIT.md) |
+| **G3. Algorithm rankings can change with the cohort.** Pooled scores alone hide that difference. | Compare standard classifiers on shared features under stated splits. | Fit six supervised methods on PCA-reduced EfficientNet-B3 embeddings. RBF SVM led the 47-image FracAtlas validation holdout at 56.5% balanced accuracy. [Classical comparison](ML3/artifacts/retraining/algorithm-comparison.json) |
+| **G4. Aggregate metrics can hide label conflicts and individual failures.** | Make single-image disagreements reviewable and check the expanded model on another dataset. | Compare four checkpoint outputs and six independent region scores. Export the review record and compare original and revised results on BTXRD. [Frozen external check](ML3/artifacts/retraining/btxrd-mirror-evaluation.json) · [Follow-up](ML3/artifacts/retraining/center-crop-candidates.json) |
+
+### Implemented evaluation workflow
+
+1. Track data provenance and available group identifiers before splitting.
+2. Keep the frozen three-class benchmark separate from the expanded workbench and exploratory analyses.
+3. Use the pooled, source-held-out and dimensions-only experiments to measure generalization and shortcut effects.
+4. Inspect per-image results and provisional labels in the workbench, including specimen 06.
+5. Preserve the first BTXRD run and the later crop follow-up as separate artifacts. The follow-up informed the project revision and needs a fresh external check.
+
 ## 1. What question does the literature help us ask?
 
 An imaging model can perform well on a familiar dataset and fail on a different source. Different sources may have different scanners, crops, resolutions, patient groups, labels and implant appearances. If these differences align with the class label, learning the source can help predict the label.

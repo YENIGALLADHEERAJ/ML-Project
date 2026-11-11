@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-11",
+  "runtime": "CPU inference, Ryzen 9 9955HX, local Windows server",
+  "request": "POST /api/predict, sequential localhost round-trip with full JSON response",
+  "sample_ids": [
+    2,
+    5,
+    6,
+    8,
+    2,
+    5,
+    6,
+    8,
+    2,
+    5,
+    6,
+    8
+  ],
+  "latency_ms": [
+    394.9979,
+    276.2931,
+    310.449,
+    277.2649,
+    214.2388,
+    305.0145,
+    304.3299,
+    320.4037,
+    295.5474,
+    337.4156,
+    270.7189,
+    314.3534
+  ],
+  "median_ms": 304.67,
+  "min_ms": 214.24,
+  "max_ms": 395.0,
+  "scope": "One running server and one client. No cold-start or concurrent load measurement."
+}
