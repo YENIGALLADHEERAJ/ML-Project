@@ -20,7 +20,7 @@ DL = {"manuscript.pdf": ROOT / "paper/manuscript.pdf", "manuscript.docx": ROOT /
       "Submission_readiness_checklist.md": ROOT / "docs/Submission_readiness_checklist.md", "dataset_licences.md": ROOT / "docs/submission/dataset_licences.md",
       "clinician_review_PROTOCOL.md": ROOT / "clinician_review/PROTOCOL.md", "REPRODUCIBILITY.md": ROOT / "REPRODUCIBILITY.md", "requirements.txt": ROOT / "requirements.txt",
       "audit_results.py": ROOT / "scripts/audit_results.py"}
-for name in ['DELIVERY.md', 'RUBRIC_AUDIT.md', 'DEMO_AND_VIVA.md', 'LITERATURE_MATRIX.md']:
+for name in ['DELIVERY.md', 'TEAM_CHECKLIST.md', 'DEMO_AND_VIVA.md', 'LITERATURE_MATRIX.md']:
     DL[name] = ROOT / 'docs' / name
 for name in ['context.md', 'literaturesurvey.md']:
     DL[name] = ROOT.parent / name
@@ -40,10 +40,11 @@ _smp = json.loads((SITE / "data/samples.json").read_text(encoding="utf-8"))
 have = lambda n: (SITE / "downloads" / n).exists()
 sha = lambda n: hashlib.sha256((SITE / "downloads" / n).read_bytes()).hexdigest()[:16] if have(n) else "n/a"
 
-LOGO = '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect x="1" y="1" width="38" height="38" rx="11" fill="#092e29"/><path d="M9 14v-4h4m14 0h4v4M9 26v4h4m14 0h4v-4" fill="none" stroke="#62d9ad" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 8v8a4 4 0 0 0 4 4h6" fill="none" stroke="#f4fbf6" stroke-width="4.2" stroke-linecap="round"/><path d="M12 23h4a4 4 0 0 1 4 4v5" fill="none" stroke="#a1eccb" stroke-width="4.2" stroke-linecap="round"/><circle cx="22" cy="22" r="1.6" fill="#62d9ad"/></svg>'
+import clarity
+LOGO = '<img class="logo" src="assets/logo.svg" alt="" width="40" height="40">'   # standalone SVG (gradients/ids live in the file, so the page keeps unique ids)
 NAV = [("index.html", "Home"), ("demo.html", "AI Demo"), ("robustness.html", "Robustness"), ("results.html", "Results")]
 STUDY = [("literature.html", "Literature survey", "Prior research, themes and the focused gap."), ("results.html", "Results", "Measured outcomes, baselines and intervals."), ("robustness.html", "Source shift", "Switch between pooled and source-controlled tests."), ("research.html", "Research question", "Hypotheses and what is not claimed."), ("datasets.html", "Datasets", "Six public sources and their provenance."), ("methodology.html", "Methodology", "Freeze, single unsealing, clustered bootstrap."), ("limitations.html", "Limitations", "What the study cannot show.")]
-PROJ = [("evaluation.html", "Evidence hub", "All sixteen rubric criteria and submission gaps."), ("paper.html", "Manuscript & artifacts", "Study figures and supporting downloads."), ("reproducibility.html", "Reproducibility", "Code, frozen plan, audit and artifacts."), ("about.html", "About", "Status, authorship and responsible use.")]
+PROJ = [("evaluation.html", "Evidence hub", "Where each part is documented, and what remains open."), ("paper.html", "Manuscript & artifacts", "Study figures and supporting downloads."), ("reproducibility.html", "Reproducibility", "Code, frozen plan, audit and artifacts."), ("about.html", "About", "Status, authorship and responsible use.")]
 
 
 def menu(cur):
@@ -52,12 +53,11 @@ def menu(cur):
         c = AC if h == cur else ""; k = ' class="cta"' if cta else ""
         return f'<li><a href="{h}"{c}{k}>{t}</a></li>'
     def dd(label, items): return f'<li><details><summary>{label} ▾</summary><div class="drop">' + "".join('<a href="%s"%s>%s<small>%s</small></a>' % (h, AC if h == cur else "", t, d) for h, t, d in items) + '</div></details></li>'
-    anchor = '' if cur == 'index.html' else 'index.html'
     project_links = [('context.html','Implants & imaging','Orthopaedic implants and what the model scores.'), ('timeline.html','Implant timeline','Explore four historical implant designs.'), ('contribution.html','Project contribution','Methods, experiments and the comparison tool.')] + STUDY + PROJ
-    return ('<ul class="menu" id="menu">' + a(anchor+'#workflow','X-ray workflow') + a(anchor+'#model-comparison','Compare models') + a('results.html','Benchmark results') + dd('Project resources',project_links) + a('demo.html','Open X-ray demo',cta=True) + '</ul>')
+    return ('<ul class="menu" id="menu">' + a('guide.html','Start here') + a('results.html','Results') + a('methodology.html','How it was tested') + dd('More',project_links) + a('demo.html','Try the demo',cta=True) + '</ul>')
 
 
-ORDER = [("index.html", "Home"), ("demo.html", "X-ray demo"), ("robustness.html", "Robustness"), ("results.html", "Results"), ("research.html", "Research"), ("datasets.html", "Datasets"), ("methodology.html", "Methodology"), ("limitations.html", "Limitations"), ("paper.html", "Paper"), ("reproducibility.html", "Reproducibility"), ("about.html", "About")]
+ORDER = [("index.html", "Home"), ("guide.html", "Start here"), ("demo.html", "X-ray demo"), ("robustness.html", "Robustness"), ("results.html", "Results"), ("research.html", "Research"), ("datasets.html", "Datasets"), ("methodology.html", "Methodology"), ("limitations.html", "Limitations"), ("paper.html", "Paper"), ("reproducibility.html", "Reproducibility"), ("about.html", "About")]
 ORDER += [('context.html', 'Implants & imaging'), ('contribution.html', 'Our contribution'), ('literature.html', 'Literature survey'), ('evaluation.html', 'Evidence hub')]
 ORDER += [('timeline.html', 'Implant history'), ('border-audit.html', 'X-ray border audit')]
 STUDY.insert(0, ('border-audit.html', 'X-ray border audit', 'Compare paired border changes on the same joint image.'))
@@ -189,7 +189,7 @@ P["index.html"] = page("index.html", "High pooled accuracy does not mean robust 
 ''', ["hero.js"])
 
 # ---------------- DEMO ----------------
-P["demo.html"] = page("demo.html", "X-ray Demo", "Drop a radiograph, or pick a held-out specimen, and watch four checkpoints name the joint — and disagree.", head("Instrument 01 · Joint recognition", "One X-ray. <em>Two ways to read it.</em>", "Upload a radiograph or choose a sample. See which of six regions the expanded model flags, then compare four benchmark checkpoints trained on different data sources.") + f'''
+P["demo.html"] = page("demo.html", "X-ray Demo", "Drop a radiograph, or pick a held-out specimen, and watch four checkpoints name the joint — and disagree.", head("Instrument 01 · Joint recognition", "One X-ray. <em>Two ways to read it.</em>", "Pick an X-ray or upload your own. Four models name the joint, a heat map shows what they looked at, and a shortcut probe checks whether the answer could be a trick.") + f'''
 <section style="padding-top:clamp(2rem,4vw,4rem)"><div class="wrap">
 <div id="backend" class="statusline"><i class="dot"></i><span class="msg">Checking inference server…</span></div>
 <div class="dm"><div class="dm-left">
@@ -200,8 +200,8 @@ P["demo.html"] = page("demo.html", "X-ray Demo", "Drop a radiograph, or pick a h
 <input id="file" type="file" accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff" hidden>
 <div class="strip"><h4>Specimen library · held-out FracAtlas (CC BY 4.0)</h4><div id="samples" class="samples" role="group" aria-label="Sample radiographs"></div></div>
 <p class="plate-note">Do not upload images that could identify a patient. The bundled specimens were visually reviewed. The project’s recorded knee labels await clinician verification. Specimen 06 appears to show an elbow.</p></div></div>
-<div id="report-anchor"><div id="out" aria-live="polite"><div class="report"><div class="idle"><span class="rp-kicker" style="font:500 .68rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--brass-ink)">Awaiting specimen</span><h2 style="margin-top:14px">How to read the <em>report.</em></h2>
-<ol><li><span><b>Expanded model</b> scores Hip, Knee, Shoulder, Hand, Leg and Elbow independently.</span></li><li><span><b>Pooled model</b> — trained on all six sources. Its prediction appears at the top of the report.</span></li><li><span><b>Three source-held-out models</b> — each trained <i>without</i> one source (FracAtlas, hip implants, shoulder implants).</span></li><li><span><b>Concordance</b> — shows how many of the four checkpoints selected the same class as the pooled model.</span></li><li><span><b>Grad-CAM</b> — drag to compare the radiograph with a heatmap of regions that influenced the pooled model’s prediction.</span></li></ol>
+<div id="report-anchor"><div id="out" aria-live="polite"><div class="report"><div class="idle"><span class="rp-kicker" style="font:500 .68rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--brass-ink)">Awaiting specimen</span><h2 style="margin-top:14px">How to read the <em>report.</em></h2><p style="margin:10px 0 0;max-width:46ch;color:var(--muted)">Choose a sample or drop an X-ray on the left. This is what the report will show.</p>
+<ol><li><span><b>Main answer</b> The joint our main model thinks it sees, with a score. The score is how the model splits 100% between Hip, Knee and Shoulder, not the chance of being right.</span></li><li><span><b>Four models</b> The same type of network trained on different data: one saw everything, the others each missed one dataset. If they disagree, the training data is changing the answer.</span></li><li><span><b>Six-region flags</b> A second model that flags Hip, Knee, Shoulder, Hand, Leg and Elbow independently, each with its own cutoff.</span></li><li><span><b>Heat map</b> Drag the slider. Bright areas pushed the model towards its answer. It shows sensitivity, not proof the model understands anatomy.</span></li><li><span><b>Image properties</b> Size, shape, format and file size. These are the clues a shortcut could use.</span></li><li><span><b>Shortcut probe</b> A blind model that sees only those properties also guesses. If it agrees with the main answer, the answer could be a shortcut.</span></li></ol>
 <div class="skel" style="width:70%;margin-top:26px"></div><div class="skel" style="width:52%"></div></div></div></div></div></div></div></section>
 <section class="tight"><div class="wrap">{DISC}</div></section>
 ''', ["demo.js"], bodycls="demo-page", css=("demo.css",))
@@ -385,7 +385,9 @@ P['timeline.html'] = history_page(page, head, sec, DISC)
 from presentation import intro as presentation_intro
 for name in ['robustness', 'results']:
     P[name+'.html'] = P[name+'.html'].replace('</section>', '</section>'+presentation_intro(name), 1)
-home = (SITE / 'reference_home.html.template').read_text(encoding='utf-8')
+P['guide.html'] = clarity.guide_page(page, head, sec)
+(SITE / 'assets/js/terms.js').write_text(clarity.terms_js(), encoding='utf-8')
+home = clarity.tune_home((SITE / 'reference_home.html.template').read_text(encoding='utf-8'))
 lab_samples = [{k:v for k,v in s.items() if k != 'gradcam'} for s in _smp if s['id'] in ['sample2','sample5','sample8']]
 (SITE / 'data/lab_samples.json').write_text(json.dumps(lab_samples, separators=(',',':')),encoding='utf-8')
 checkpoint_receipts = ''.join(f'<article class="compact-receipt"><span>0{i+2}</span><div><h3>{escape(model["name"])}</h3><p>{escape(model["description"])}</p></div><div class="compact-output"><b>{escape(model["pred"])}</b><span>{model["confidence"]*100:.1f}%</span></div></article>' for i,model in enumerate(example['models'][1:]))
@@ -407,10 +409,12 @@ for fn, html in P.items():
     if fn == 'timeline.html': html = html.replace('<link rel="stylesheet" href="assets/css/studio.css">', '').replace('</head>', '<link rel="stylesheet" href="assets/css/studio.css"></head>')
     html = html.replace('</head>', '<link rel="stylesheet" href="assets/css/reference.css"></head>')
     html = html.replace('</head>', '<link rel="stylesheet" href="assets/css/readability.css"></head>')
+    html = html.replace('</head>', '<link rel="stylesheet" href="assets/css/clarity.css"></head>')
+    html = clarity.add_plain(fn, html)
     if fn in ['results.html','robustness.html']:
         html = html.replace('<body class="">','<body class="data-page">')
     html = html.replace('<script src="assets/js/app.js"></script>', '<script src="assets/js/app.js"></script><script src="assets/js/film.js"></script>')
-    html = html.replace('</body>', '<script src="assets/js/experience.js"></script></body>')
+    html = html.replace('</body>', '<script src="assets/js/experience.js"></script><script src="assets/js/terms.js"></script></body>')
     if fn == 'index.html': html = html.replace('</body>', '<script src="assets/js/studio.js"></script></body>')
     if fn == 'index.html': html = html.replace('</body>', '<script src="assets/js/reference.js"></script></body>')
     html = html.replace('#F4F0E6', '#091724')
@@ -419,8 +423,9 @@ for fn, html in P.items():
     html = re.sub(r'<div class="research-banner">.*?</div>', '', html)
     html = html.replace('research demonstration','academic project').replace('Research demonstration','Academic project').replace('Research Demonstration','Academic Project')
     html = html.replace('A academic project — not a medical device and not clinically validated.', 'Built as an academic project in source-aware orthopaedic AI.')
+    html = html.replace('<div><p class="fh">Explore</p><ul>', '<div><p class="fh">Explore</p><ul><li><a href="guide.html">Start here</a></li>', 1)
     html = html.replace('AI Demo', 'Workbench').replace('Study ▾', 'Evidence ▾')
     html = html.replace('An independent research website for a pre-specified, source-controlled evaluation of hip, knee and shoulder radiograph recognition.', 'A model evaluation workbench for hip, knee and shoulder radiographs. Compare checkpoints and investigate source sensitivity.')
     (SITE / fn).write_text(versioned(webp_imgs(fix_headings(html))), encoding="utf-8")
-(SITE / "assets/favicon.svg").write_text(LOGO.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" '), encoding="utf-8")
+(SITE / "assets/favicon.svg").write_text((SITE / "assets/logo.svg").read_text(encoding="utf-8"), encoding="utf-8")
 print("built", len(P), "pages")
