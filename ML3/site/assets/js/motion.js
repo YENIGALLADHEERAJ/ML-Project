@@ -28,14 +28,14 @@ function intro(){
  if(!reduced&&introTargets.length){gsap.from(introTargets,{opacity:0,y:28,duration:1.2,ease:"expo.out",stagger:.1,delay:.35,clearProps:"all"})}
  window.dispatchEvent(new Event("sl:intro"))}
 function enter(){
- if(curtain&&root.classList.contains("is-entering")&&!reduced){const svg=$("svg",curtain);gsap.timeline({onComplete:()=>{root.classList.remove("is-entering");gsap.set(curtain,{yPercent:101,clearProps:"transform"})}}).to(svg,{opacity:0,duration:.25,delay:.15}).to(curtain,{yPercent:-101,duration:.75,ease:"expo.inOut"},"-=.05").add(intro,"-=.45")}
+ if(curtain&&root.classList.contains("is-entering")&&!reduced){const svg=$("svg,img",curtain);gsap.timeline({onComplete:()=>{root.classList.remove("is-entering");gsap.set(curtain,{yPercent:101,clearProps:"transform"})}}).to(svg,{opacity:0,duration:.25,delay:.15}).to(curtain,{yPercent:-101,duration:.75,ease:"expo.inOut"},"-=.05").add(intro,"-=.45")}
  else{root.classList.remove("is-entering");intro()}}
 (document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,900))]):Promise.resolve()).then(enter);
 window.addEventListener("pageshow",e=>{if(e.persisted&&curtain){root.classList.remove("is-entering");gsap.set(curtain,{yPercent:101})}});
 /* leave transition */
 if(curtain&&!reduced)document.addEventListener("click",e=>{const a=e.target.closest("a[href]");if(!a||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target||a.hasAttribute("download"))return;
  const u=new URL(a.href,location.href);if(u.origin!==location.origin||!/(\.html|\/)$/.test(u.pathname)||(u.pathname===location.pathname&&u.search===location.search))return;
- e.preventDefault();lenis&&lenis.stop();gsap.set(curtain,{yPercent:101});gsap.to($("svg",curtain),{opacity:1,duration:.25,delay:.25});gsap.to(curtain,{yPercent:0,duration:.6,ease:"expo.inOut",onComplete:()=>{location.href=u.href}})});
+ e.preventDefault();lenis&&lenis.stop();gsap.set(curtain,{yPercent:101});gsap.to($("svg,img",curtain),{opacity:1,duration:.25,delay:.25});gsap.to(curtain,{yPercent:0,duration:.6,ease:"expo.inOut",onComplete:()=>{location.href=u.href}})});
 /* ---------- generic scroll effects ---------- */
 if(!reduced){
  $$("[data-parallax]").forEach(el=>{const k=parseFloat(el.dataset.parallax)||.15;gsap.fromTo(el,{yPercent:-k*50},{yPercent:k*50,ease:"none",scrollTrigger:{trigger:el.parentElement||el,start:"top bottom",end:"bottom top",scrub:true}})});

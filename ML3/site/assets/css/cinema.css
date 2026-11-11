@@ -117,8 +117,8 @@ footer.site{background:var(--scan);border-top:1px solid var(--line);color:var(--
 /* cursor + curtain */
 .glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 11%,transparent),transparent);opacity:0;transition:opacity .6s;will-change:transform}html.has-glow .glow{opacity:1}
 main,footer.site{position:relative;z-index:1}header.site{z-index:60}
-.curtain{position:fixed;inset:0;z-index:200;background:var(--scan);display:grid;place-items:center;pointer-events:none;transform:translateY(101%)}.curtain svg{width:56px;height:56px;opacity:0}
-html.js-motion.is-entering .curtain{transform:none;pointer-events:all}html.js-motion.is-entering .curtain svg{opacity:1}
+.curtain{position:fixed;inset:0;z-index:200;background:var(--scan);display:grid;place-items:center;pointer-events:none;transform:translateY(101%)}.curtain svg,.curtain img{width:56px;height:56px;opacity:0}
+html.js-motion.is-entering .curtain{transform:none;pointer-events:all}html.js-motion.is-entering .curtain svg,.curtain img{opacity:1}
 .progress{position:fixed;top:0;left:0;height:2px;width:100%;transform:scaleX(0);transform-origin:left;background:var(--accent);z-index:300;pointer-events:none}
 @media(prefers-reduced-motion:reduce){.frame .scanline,.marquee .track,.scrollcue i,.drop-zone svg{animation:none}html.js [data-split]{visibility:visible}}
 @media print{.curtain,.glow,#fx,.progress{display:none}}
