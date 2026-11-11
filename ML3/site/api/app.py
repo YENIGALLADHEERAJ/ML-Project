@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.gzip import GZipMiddleware
 from PIL import Image, UnidentifiedImageError
 import infer
+import probe
 from starlette.concurrency import run_in_threadpool
 from threading import Lock
 
@@ -87,6 +88,10 @@ async def predict(request: Request):
     facts = infer.image_facts(raw, img); warnings = []
     if facts["colour_saturation"] > 0.12: warnings.append("This looks like a colour photograph or screenshot rather than a radiograph; the models were trained on greyscale radiographs.")
     out = await run_in_threadpool(analyse, img); out.update(image=facts, warnings=warnings, disclaimer=DISCLAIMER, stored=False)
+    try:
+        out["probe"] = probe.run(facts, out)   # anatomy-free shortcut probe; never blocks the main prediction
+    except Exception:
+        out["probe"] = dict(available=False)
     return out
 
 

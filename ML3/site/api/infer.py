@@ -131,5 +131,4 @@ def image_facts(raw: bytes, img: Image.Image):
 
 
 def model_hashes():
-    reg = json.loads((MODEL_DIR / "models.json").read_text()) if (MODEL_DIR / "models.json").exists() else {}
     return {s[0]: dict(file=s[3], sha256=hashlib.sha256((MODEL_DIR / s[3]).read_bytes()).hexdigest()[:16]) for s in SPEC if (MODEL_DIR / s[3]).exists()}
