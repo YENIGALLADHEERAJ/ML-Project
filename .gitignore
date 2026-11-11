@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+ML3/data/
+ML3/clinician_review/private/

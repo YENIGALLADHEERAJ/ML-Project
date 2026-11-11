@@ -1,0 +1,100 @@
+{
+  "features": "Frozen EfficientNet-B3 embeddings, standardization, and 64-component PCA",
+  "reviewed_elbow_rows_removed": 27,
+  "protocols": {
+    "pooled": {
+      "n_train": 3084,
+      "n_val": 659,
+      "scores": [
+        {
+          "model": "Logistic regression",
+          "balanced_accuracy": 0.9929673721340389,
+          "macro_f1": 0.9884648630784284
+        },
+        {
+          "model": "CART decision tree",
+          "balanced_accuracy": 0.9580568566224305,
+          "macro_f1": 0.9516740181192008
+        },
+        {
+          "model": "Random forest",
+          "balanced_accuracy": 0.9780040188510134,
+          "macro_f1": 0.9768538378830561
+        },
+        {
+          "model": "RBF SVM",
+          "balanced_accuracy": 0.9960537918871252,
+          "macro_f1": 0.9953088270508025
+        },
+        {
+          "model": "Gradient boosting",
+          "balanced_accuracy": 0.9866431028999335,
+          "macro_f1": 0.9845249895517966
+        },
+        {
+          "model": "Voting ensemble",
+          "balanced_accuracy": 0.9960537918871252,
+          "macro_f1": 0.9953088270508025
+        }
+      ],
+      "best": "RBF SVM"
+    },
+    "without_fracatlas": {
+      "n_train": 2839,
+      "n_val": 47,
+      "scores": [
+        {
+          "model": "Logistic regression",
+          "balanced_accuracy": 0.5432098765432098,
+          "macro_f1": 0.5187739463601533
+        },
+        {
+          "model": "CART decision tree",
+          "balanced_accuracy": 0.3950617283950617,
+          "macro_f1": 0.3715913715913716
+        },
+        {
+          "model": "Random forest",
+          "balanced_accuracy": 0.4518518518518519,
+          "macro_f1": 0.44841269841269843
+        },
+        {
+          "model": "RBF SVM",
+          "balanced_accuracy": 0.5654320987654321,
+          "macro_f1": 0.5958092087124346
+        },
+        {
+          "model": "Gradient boosting",
+          "balanced_accuracy": 0.4641975308641975,
+          "macro_f1": 0.4512169312169312
+        },
+        {
+          "model": "Voting ensemble",
+          "balanced_accuracy": 0.4987654320987654,
+          "macro_f1": 0.48026048026048024
+        }
+      ],
+      "best": "RBF SVM"
+    }
+  },
+  "clustering": [
+    {
+      "method": "K-means",
+      "anatomy_ari": 0.3310548810877272,
+      "source_ari": 0.5137656872643199,
+      "silhouette": 0.09520849585533142
+    },
+    {
+      "method": "Gaussian mixture (EM)",
+      "anatomy_ari": 0.5814334683766099,
+      "source_ari": 0.3856415602955536,
+      "silhouette": 0.13938750326633453
+    },
+    {
+      "method": "Hierarchical clustering",
+      "anatomy_ari": 0.3701453546264293,
+      "source_ari": 0.5501863402348136,
+      "silhouette": 0.0946153774857521
+    }
+  ]
+}

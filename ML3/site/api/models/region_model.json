@@ -1,0 +1,20 @@
+{
+  "classes": [
+    "Hip",
+    "Knee",
+    "Shoulder",
+    "Hand",
+    "Leg",
+    "Elbow"
+  ],
+  "thresholds": [
+    0.7,
+    0.5,
+    0.6,
+    0.35,
+    0.2,
+    0.45
+  ],
+  "average_views": true,
+  "center_crop_weight": 1
+}

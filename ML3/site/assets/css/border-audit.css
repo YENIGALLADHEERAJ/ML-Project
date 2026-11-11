@@ -1,0 +1,9 @@
+.audit-controls{display:flex;flex-wrap:wrap;gap:16px;margin:22px 0}
+.audit-controls label{display:grid;gap:6px;max-width:100%;font-weight:600}
+.audit-controls select{max-width:100%;min-height:44px}
+.audit-views{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.audit-views figure{margin:0;padding:14px;border:1px solid var(--line);border-radius:12px}
+.audit-views img{width:100%;height:auto;image-rendering:pixelated;display:block;border-radius:6px}
+.audit-views figcaption{margin-top:12px}
+.audit-views figcaption p{margin:6px 0 0;font-size:.85rem}
+@media(max-width:700px){.audit-views{grid-template-columns:1fr}.audit-views figure{max-width:400px}}

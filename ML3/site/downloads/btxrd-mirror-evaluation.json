@@ -1,0 +1,892 @@
+{
+  "dataset": "BTXRD",
+  "source": "https://doi.org/10.6084/m9.figshare.27865398",
+  "cohort": "All mirror spreadsheet rows with exactly one of the Elbow, Knee and Shoulder tags",
+  "checkpoint_sha256": "8a5f41fd621e6a4f032040d2e0a44fd8d73c21da1df21205c1bd62527d2505cd",
+  "config_sha256": "e46e7929a3a77d6485d4eb5e698a2f65f336cab1d71342c882aa18306da848f8",
+  "archive_md5": null,
+  "mirror": "https://www.kaggle.com/datasets/thanhngan123/btxrd-data",
+  "plan_sha256": "86ee8fe354cd103d8f2a81eefd4fec89411f1a68c4ebb62101b5ff4d6410c3d3",
+  "config": {
+    "classes": [
+      "Hip",
+      "Knee",
+      "Shoulder",
+      "Hand",
+      "Leg",
+      "Elbow"
+    ],
+    "thresholds": [
+      0.3,
+      0.85,
+      0.7,
+      0.7,
+      0.25,
+      0.2
+    ],
+    "average_views": true
+  },
+  "summary": {
+    "Elbow": {
+      "positives": 5,
+      "true_positives": 5,
+      "other_joint_images": 49,
+      "false_flags_on_other_joints": 33
+    },
+    "Knee": {
+      "positives": 37,
+      "true_positives": 8,
+      "other_joint_images": 17,
+      "false_flags_on_other_joints": 0
+    },
+    "Shoulder": {
+      "positives": 12,
+      "true_positives": 12,
+      "other_joint_images": 42,
+      "false_flags_on_other_joints": 0
+    }
+  },
+  "predictions": [
+    {
+      "image_id": "IMG000133.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 4.7020395868457854e-05,
+        "Knee": 4.033717414131388e-05,
+        "Shoulder": 0.9999620318412781,
+        "Hand": 0.07108455151319504,
+        "Leg": 9.093678090721369e-05,
+        "Elbow": 0.018510079011321068
+      }
+    },
+    {
+      "image_id": "IMG000134.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 4.45952582595055e-06,
+        "Knee": 6.137460786703741e-06,
+        "Shoulder": 0.9994389414787292,
+        "Hand": 0.0027067074552178383,
+        "Leg": 1.1238442311878316e-05,
+        "Elbow": 0.1242235079407692
+      }
+    },
+    {
+      "image_id": "IMG000260.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 2.2169157091411762e-05,
+        "Knee": 8.827702549751848e-05,
+        "Shoulder": 0.9992897510528564,
+        "Hand": 0.0006824578158557415,
+        "Leg": 0.00025568067212589085,
+        "Elbow": 0.045569971203804016
+      }
+    },
+    {
+      "image_id": "IMG000472.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0005860525998286903,
+        "Knee": 4.165342488704482e-06,
+        "Shoulder": 0.7543751001358032,
+        "Hand": 0.008594377897679806,
+        "Leg": 1.358106510451762e-05,
+        "Elbow": 0.9291581511497498
+      }
+    },
+    {
+      "image_id": "IMG000568.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00040426713530905545,
+        "Knee": 6.237865363800665e-06,
+        "Shoulder": 0.9491188526153564,
+        "Hand": 0.0011133108055219054,
+        "Leg": 1.4045676834939513e-05,
+        "Elbow": 0.36742648482322693
+      }
+    },
+    {
+      "image_id": "IMG000650.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00024545914493501186,
+        "Knee": 0.6884044408798218,
+        "Shoulder": 0.002347114961594343,
+        "Hand": 0.0040474701672792435,
+        "Leg": 0.7872598171234131,
+        "Elbow": 0.3740691542625427
+      }
+    },
+    {
+      "image_id": "IMG000651.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.007365867495536804,
+        "Knee": 0.1499049961566925,
+        "Shoulder": 0.008906150236725807,
+        "Hand": 0.00971540529280901,
+        "Leg": 0.38348332047462463,
+        "Elbow": 0.8574657440185547
+      }
+    },
+    {
+      "image_id": "IMG000795.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 6.175679300213233e-05,
+        "Knee": 5.745453108829679e-06,
+        "Shoulder": 0.9096122980117798,
+        "Hand": 0.0012774678179994226,
+        "Leg": 1.1175356121384539e-05,
+        "Elbow": 0.5116479396820068
+      }
+    },
+    {
+      "image_id": "IMG000804.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 6.740682147210464e-05,
+        "Knee": 0.508133053779602,
+        "Shoulder": 3.9299848140217364e-05,
+        "Hand": 9.442084410693496e-05,
+        "Leg": 0.530003547668457,
+        "Elbow": 0.5652799606323242
+      }
+    },
+    {
+      "image_id": "IMG000805.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.006271756254136562,
+        "Knee": 0.011893815360963345,
+        "Shoulder": 0.004433683585375547,
+        "Hand": 0.007310254964977503,
+        "Leg": 0.14516253769397736,
+        "Elbow": 0.9908630847930908
+      }
+    },
+    {
+      "image_id": "IMG000806.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 0.007557807490229607,
+        "Knee": 0.7604585289955139,
+        "Shoulder": 0.0018643070943653584,
+        "Hand": 0.002788714598864317,
+        "Leg": 0.794052243232727,
+        "Elbow": 0.19839996099472046
+      }
+    },
+    {
+      "image_id": "IMG000843.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.011762814596295357,
+        "Knee": 3.53342475136742e-05,
+        "Shoulder": 0.8555773496627808,
+        "Hand": 0.0044004363007843494,
+        "Leg": 5.7349381677340716e-05,
+        "Elbow": 0.3805140256881714
+      }
+    },
+    {
+      "image_id": "IMG000899.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 0.00020659211440943182,
+        "Knee": 0.08701414614915848,
+        "Shoulder": 0.9955588579177856,
+        "Hand": 0.001728104893118143,
+        "Leg": 0.06080298870801926,
+        "Elbow": 0.0008356000180356205
+      }
+    },
+    {
+      "image_id": "IMG001119.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 6.214627501321957e-05,
+        "Knee": 0.004288392141461372,
+        "Shoulder": 7.257596007548273e-05,
+        "Hand": 0.0008503487915731966,
+        "Leg": 0.13943064212799072,
+        "Elbow": 0.9966245889663696
+      }
+    },
+    {
+      "image_id": "IMG001126.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 1.2078231520717964e-05,
+        "Knee": 6.198314167704666e-06,
+        "Shoulder": 0.9999794363975525,
+        "Hand": 0.00022531530703417957,
+        "Leg": 1.4519542673951946e-05,
+        "Elbow": 0.0043131629936397076
+      }
+    },
+    {
+      "image_id": "IMG001127.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 8.653283657622524e-06,
+        "Knee": 1.0767110325105023e-05,
+        "Shoulder": 0.999995231628418,
+        "Hand": 0.0008120107813738286,
+        "Leg": 4.172899207333103e-05,
+        "Elbow": 0.0006084125488996506
+      }
+    },
+    {
+      "image_id": "IMG001131.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0005121697904542089,
+        "Knee": 0.788714587688446,
+        "Shoulder": 0.00022592708410229534,
+        "Hand": 0.0008599509601481259,
+        "Leg": 0.7925831079483032,
+        "Elbow": 0.23068714141845703
+      }
+    },
+    {
+      "image_id": "IMG001132.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00660365168005228,
+        "Knee": 0.008060798048973083,
+        "Shoulder": 0.0025212946347892284,
+        "Hand": 0.041108161211013794,
+        "Leg": 0.24738092720508575,
+        "Elbow": 0.9914526343345642
+      }
+    },
+    {
+      "image_id": "IMG001172.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 1.824978789954912e-05,
+        "Knee": 6.797028618166223e-06,
+        "Shoulder": 0.9993963241577148,
+        "Hand": 0.0003359804395586252,
+        "Leg": 1.664777119003702e-05,
+        "Elbow": 0.03741684928536415
+      }
+    },
+    {
+      "image_id": "IMG001173.jpeg",
+      "reference": "Shoulder",
+      "flagged": [
+        "Shoulder"
+      ],
+      "scores": {
+        "Hip": 0.00036380812525749207,
+        "Knee": 1.7241252862731926e-05,
+        "Shoulder": 0.9958049058914185,
+        "Hand": 0.0012191394343972206,
+        "Leg": 5.35471917828545e-05,
+        "Elbow": 0.0164078027009964
+      }
+    },
+    {
+      "image_id": "IMG001182.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00016324457828886807,
+        "Knee": 0.27716436982154846,
+        "Shoulder": 0.00010631516488501802,
+        "Hand": 0.0003755221259780228,
+        "Leg": 0.34265220165252686,
+        "Elbow": 0.7639039754867554
+      }
+    },
+    {
+      "image_id": "IMG001183.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 3.4846103517338634e-05,
+        "Knee": 0.00022064507356844842,
+        "Shoulder": 4.0840030123945326e-05,
+        "Hand": 7.690343772992492e-05,
+        "Leg": 0.017263714224100113,
+        "Elbow": 0.9998026490211487
+      }
+    },
+    {
+      "image_id": "IMG001186.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 2.1070458387839608e-05,
+        "Knee": 0.8917297124862671,
+        "Shoulder": 4.971227463101968e-05,
+        "Hand": 6.0675542044918984e-05,
+        "Leg": 0.8959985971450806,
+        "Elbow": 0.2592279613018036
+      }
+    },
+    {
+      "image_id": "IMG001187.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 1.1142891708004754e-05,
+        "Knee": 0.9995190501213074,
+        "Shoulder": 3.1837909773457795e-05,
+        "Hand": 4.37500057159923e-05,
+        "Leg": 0.9990324974060059,
+        "Elbow": 0.003854196285828948
+      }
+    },
+    {
+      "image_id": "IMG001190.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00015749652811791748,
+        "Knee": 0.27615267038345337,
+        "Shoulder": 0.0002677832671906799,
+        "Hand": 0.00023972292547114193,
+        "Leg": 0.3910277485847473,
+        "Elbow": 0.7344284057617188
+      }
+    },
+    {
+      "image_id": "IMG001191.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 1.3088570995023474e-05,
+        "Knee": 0.19121672213077545,
+        "Shoulder": 7.791861207806505e-06,
+        "Hand": 2.8760052373399958e-05,
+        "Leg": 0.3298967480659485,
+        "Elbow": 0.8446816205978394
+      }
+    },
+    {
+      "image_id": "IMG001194.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.16544657945632935,
+        "Knee": 0.026307813823223114,
+        "Shoulder": 0.0006637927726842463,
+        "Hand": 0.2811416983604431,
+        "Leg": 0.2585724890232086,
+        "Elbow": 0.5375615358352661
+      }
+    },
+    {
+      "image_id": "IMG001195.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Hand",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.13489776849746704,
+        "Knee": 0.00229323236271739,
+        "Shoulder": 0.11581490933895111,
+        "Hand": 0.8155738711357117,
+        "Leg": 0.015736805275082588,
+        "Elbow": 0.9910008907318115
+      }
+    },
+    {
+      "image_id": "IMG001196.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0005965622840449214,
+        "Knee": 0.02386057935655117,
+        "Shoulder": 0.0040599992498755455,
+        "Hand": 0.002992250956594944,
+        "Leg": 0.07042841613292694,
+        "Elbow": 0.9528667330741882
+      }
+    },
+    {
+      "image_id": "IMG001197.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 0.00017751786799635738,
+        "Knee": 0.9991251230239868,
+        "Shoulder": 0.0002991801593452692,
+        "Hand": 8.611030352767557e-05,
+        "Leg": 0.9990230798721313,
+        "Elbow": 0.004970179405063391
+      }
+    },
+    {
+      "image_id": "IMG001198.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0020366457756608725,
+        "Knee": 0.11638549715280533,
+        "Shoulder": 0.0008872437756508589,
+        "Hand": 0.007792397867888212,
+        "Leg": 0.19326157867908478,
+        "Elbow": 0.893696665763855
+      }
+    },
+    {
+      "image_id": "IMG001199.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.004699450917541981,
+        "Knee": 0.6469849348068237,
+        "Shoulder": 0.0016658513341099024,
+        "Hand": 0.003307669423520565,
+        "Leg": 0.8748782277107239,
+        "Elbow": 0.44228336215019226
+      }
+    },
+    {
+      "image_id": "IMG001203.jpeg",
+      "reference": "Elbow",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 1.0541191841184627e-05,
+        "Knee": 1.8552147594164126e-05,
+        "Shoulder": 2.6313378839404322e-05,
+        "Hand": 0.0028655624482780695,
+        "Leg": 0.001786881359294057,
+        "Elbow": 0.9999929666519165
+      }
+    },
+    {
+      "image_id": "IMG001204.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 9.945063538907561e-06,
+        "Knee": 0.9853771328926086,
+        "Shoulder": 2.054200740531087e-05,
+        "Hand": 8.124965097522363e-05,
+        "Leg": 0.9898099303245544,
+        "Elbow": 0.03116988018155098
+      }
+    },
+    {
+      "image_id": "IMG001205.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00026791312848217785,
+        "Knee": 0.6720061898231506,
+        "Shoulder": 3.9865655708126724e-05,
+        "Hand": 0.0004494367749430239,
+        "Leg": 0.8715418577194214,
+        "Elbow": 0.4576892554759979
+      }
+    },
+    {
+      "image_id": "IMG001207.jpeg",
+      "reference": "Elbow",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0006360082770697773,
+        "Knee": 4.254664963809773e-05,
+        "Shoulder": 0.00011279007594566792,
+        "Hand": 0.003945873584598303,
+        "Leg": 0.00021818012464791536,
+        "Elbow": 0.9999178647994995
+      }
+    },
+    {
+      "image_id": "IMG001208.jpeg",
+      "reference": "Elbow",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.006437694653868675,
+        "Knee": 3.094098065048456e-05,
+        "Shoulder": 0.00011094922956544906,
+        "Hand": 0.0003474883851595223,
+        "Leg": 9.104861237574369e-05,
+        "Elbow": 0.9998051524162292
+      }
+    },
+    {
+      "image_id": "IMG001209.jpeg",
+      "reference": "Elbow",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0009992631385102868,
+        "Knee": 0.00020399995264597237,
+        "Shoulder": 0.00015766963770147413,
+        "Hand": 0.0043927151709795,
+        "Leg": 0.013257809914648533,
+        "Elbow": 0.9996782541275024
+      }
+    },
+    {
+      "image_id": "IMG001210.jpeg",
+      "reference": "Elbow",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 6.371981726260856e-05,
+        "Knee": 2.2971034923102707e-05,
+        "Shoulder": 1.5536155842710286e-05,
+        "Hand": 0.001373468665406108,
+        "Leg": 0.005489251110702753,
+        "Elbow": 0.9999505877494812
+      }
+    },
+    {
+      "image_id": "IMG001220.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 4.805492608284112e-06,
+        "Knee": 0.9999963045120239,
+        "Shoulder": 1.0489382475498132e-05,
+        "Hand": 1.066145887307357e-05,
+        "Leg": 0.9999914169311523,
+        "Elbow": 2.507527096895501e-05
+      }
+    },
+    {
+      "image_id": "IMG001221.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.005955517292022705,
+        "Knee": 0.3023233115673065,
+        "Shoulder": 0.00036475667729973793,
+        "Hand": 0.004489226266741753,
+        "Leg": 0.48266881704330444,
+        "Elbow": 0.7058355808258057
+      }
+    },
+    {
+      "image_id": "IMG001222.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00023717826115898788,
+        "Knee": 0.8456006646156311,
+        "Shoulder": 0.00019970396533608437,
+        "Hand": 0.00027757955831475556,
+        "Leg": 0.9253550171852112,
+        "Elbow": 0.20697638392448425
+      }
+    },
+    {
+      "image_id": "IMG001228.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 0.00016105972463265061,
+        "Knee": 0.9985589981079102,
+        "Shoulder": 0.0003401840222068131,
+        "Hand": 0.0003174232551828027,
+        "Leg": 0.9962603449821472,
+        "Elbow": 0.007221512030810118
+      }
+    },
+    {
+      "image_id": "IMG001229.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00010396785364719108,
+        "Knee": 0.31229814887046814,
+        "Shoulder": 1.0351190212531947e-05,
+        "Hand": 2.450149622745812e-05,
+        "Leg": 0.49400538206100464,
+        "Elbow": 0.730507493019104
+      }
+    },
+    {
+      "image_id": "IMG001230.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 1.481497565691825e-05,
+        "Knee": 0.4425567388534546,
+        "Shoulder": 4.38815368397627e-05,
+        "Hand": 3.3087184419855475e-05,
+        "Leg": 0.6083289384841919,
+        "Elbow": 0.6672226786613464
+      }
+    },
+    {
+      "image_id": "IMG001233.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.000485799100715667,
+        "Knee": 0.036838430911302567,
+        "Shoulder": 7.907453255029395e-05,
+        "Hand": 0.0007601928664371371,
+        "Leg": 0.1932937204837799,
+        "Elbow": 0.9834192991256714
+      }
+    },
+    {
+      "image_id": "IMG001234.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 3.139423279208131e-05,
+        "Knee": 0.12275689840316772,
+        "Shoulder": 1.21274460980203e-05,
+        "Hand": 0.0003932848630938679,
+        "Leg": 0.5245317220687866,
+        "Elbow": 0.9466031789779663
+      }
+    },
+    {
+      "image_id": "IMG001236.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 8.280629117507488e-06,
+        "Knee": 0.9998919367790222,
+        "Shoulder": 2.1978794393362477e-05,
+        "Hand": 4.5033302740193903e-05,
+        "Leg": 0.9998922348022461,
+        "Elbow": 0.0005367338890209794
+      }
+    },
+    {
+      "image_id": "IMG001237.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Knee",
+        "Leg"
+      ],
+      "scores": {
+        "Hip": 1.1630971130216494e-05,
+        "Knee": 0.9681980609893799,
+        "Shoulder": 2.6811292627826333e-05,
+        "Hand": 0.00031449770904146135,
+        "Leg": 0.9500023126602173,
+        "Elbow": 0.0825972929596901
+      }
+    },
+    {
+      "image_id": "IMG001238.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00010183871199842542,
+        "Knee": 0.08226306736469269,
+        "Shoulder": 0.00011820946383522823,
+        "Hand": 0.0001432057179044932,
+        "Leg": 0.21984145045280457,
+        "Elbow": 0.9237810373306274
+      }
+    },
+    {
+      "image_id": "IMG001239.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.0005517230019904673,
+        "Knee": 0.002168154576793313,
+        "Shoulder": 0.00020101496193092316,
+        "Hand": 0.000862413551658392,
+        "Leg": 0.05721389874815941,
+        "Elbow": 0.9974086284637451
+      }
+    },
+    {
+      "image_id": "IMG001241.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 1.8476439436199144e-05,
+        "Knee": 0.730129599571228,
+        "Shoulder": 1.6105303075164557e-05,
+        "Hand": 0.00012327411968726665,
+        "Leg": 0.8105968832969666,
+        "Elbow": 0.35608771443367004
+      }
+    },
+    {
+      "image_id": "IMG001242.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Leg",
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00040022446773946285,
+        "Knee": 0.23492631316184998,
+        "Shoulder": 9.769870666787028e-05,
+        "Hand": 0.0014609048375859857,
+        "Leg": 0.5731166005134583,
+        "Elbow": 0.8265362977981567
+      }
+    },
+    {
+      "image_id": "IMG001276.jpeg",
+      "reference": "Knee",
+      "flagged": [
+        "Elbow"
+      ],
+      "scores": {
+        "Hip": 0.00011748319229809567,
+        "Knee": 0.0010802233591675758,
+        "Shoulder": 0.0003072958206757903,
+        "Hand": 0.003773959819227457,
+        "Leg": 0.05042059347033501,
+        "Elbow": 0.9989948868751526
+      }
+    }
+  ]
+}

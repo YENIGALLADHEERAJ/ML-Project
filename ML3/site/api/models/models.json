@@ -1,0 +1,18 @@
+{
+ "E0_pooled_s0": {
+  "sha256": "e7eeddd1c8d8e7d3dfd287020c115c180a3405a403f2d4753ad13c5aeea51d6a",
+  "T": 0.3
+ },
+ "E2_hold_F_s0": {
+  "sha256": "66cab0f86c4ba40dff4a0dd64d1004637ae67023aeaf672c331bb04e425ed8f5",
+  "T": 0.3
+ },
+ "E3_hold_K_s0": {
+  "sha256": "4ef8cd890f29da2e3d49bde4d92140c70e7c882b319d536510d878f07fb42df4",
+  "T": 0.6000000000000001
+ },
+ "E3_hold_U_s0": {
+  "sha256": "dd5c4143460524a0c15efa8054f46d87e9ab3fb1b9d7e5d790d627f541bcabd0",
+  "T": 0.3
+ }
+}
