@@ -88,3 +88,5 @@ figcaption{font-size:.78rem;color:var(--muted);margin-top:10px;max-width:60ch;li
 .expanded-scores th:first-child{width:27%}.expanded-scores th:last-child{width:29%}
 
 .review-export{margin:24px 0}.review-export p{margin:8px 0 0;font-size:.82rem;color:var(--muted)}
+
+.probe-cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 8px}.probe-cmp>div{border:1px solid var(--line-2);padding:10px 12px;background:var(--surface)}.probe-cmp small{display:block;font:500 .66rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.probe-cmp b{display:block;font:600 1.25rem var(--serif);margin:2px 0}.probe-cmp span{font-size:.76rem;color:var(--muted)}.probe-cmp .match{border-color:var(--c2);background:rgba(217,84,30,.07)}.probe-cmp .differ{border-color:var(--good)}.probe-bars{margin:4px 0 6px}.probe-note{color:var(--muted);margin:10px 0 0}.probe-range{color:var(--muted);margin:10px 0 0;padding-left:18px}.probe-independent .verdict{border-left-color:var(--good)}.probe-unfamiliar .verdict{border-left-color:var(--muted);background:var(--surface-2)}@media (max-width:640px){.probe-cmp{grid-template-columns:1fr}}

@@ -79,6 +79,18 @@ function expandedReport(r){
  return `<section class="rp-sec expanded-report"><h3>Expanded anatomy model</h3><small>Model prediction</small><p class="expanded-labels">${esc(labels)}</p><p>The model scores the center crop across eight views. Each region has its own cutoff, and more than one region can be flagged.</p>${note?`<p class="expanded-note">${esc(note)}</p>`:""}
  <table class="expanded-scores" aria-label="Six-region scores and decision cutoffs"><thead><tr><th scope="col">Region</th><th scope="col">Score</th><th scope="col">Cutoff</th><th scope="col">Result</th></tr></thead><tbody>${scores}</tbody></table></section>`;
 }
+function probeReport(r){
+ const p=r.probe;if(!p||!p.available)return "";
+ const v=p.verdict,j=p.joint,s=p.source,e=p.evidence,pooled=r.models[0].pred,pc=x=>(x*100).toFixed(0)+"%";
+ const mix=Object.entries(s.label_mix).map(([k,x])=>`${esc(k)} ${pc(x)}`).join(", ");
+ const bars=CL.map(c=>`<div class="hb${c===j.pred?" top":""}"><span>${c}</span><span class="t"><span class="f" style="background:${COL[c]};width:${(j.probs[c]*100).toFixed(1)}%"></span></span><span class="v">${pc(j.probs[c])}</span></div>`).join("");
+ const range=p.range_notes.length?`<ul class="small probe-range">${p.range_notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:"";
+ return `<section class="rp-sec probe probe-${esc(v.level)}" aria-label="Shortcut probe"><h3>Shortcut probe · no anatomy used</h3>
+ <div class="verdict${v.level==="shortcut"?" dis":""}"><b>${esc(v.headline)}</b>${esc(v.text)}</div>${range}
+ <div class="probe-cmp"><div><small>Pooled deep model</small><b>${esc(pooled)}</b><span>looks at the image</span></div><div class="${j.agrees_with_pooled?"match":"differ"}"><small>File-properties probe</small><b>${esc(j.pred)}</b><span>${pc(j.confidence)} · never sees pixels</span></div><div><small>File looks like source</small><b>${esc(s.id)}</b><span>${esc(s.name)} · ${pc(s.confidence)}</span></div></div>
+ <div class="probe-bars">${bars}</div>
+ <p class="small probe-note">Source ${esc(s.id)} contributes ${s.n_train} development images: ${esc(mix)}. Typical file there: ${s.typical.width}×${s.typical.height} px, ${s.typical.file_kb} kB.</p>
+ <p class="small probe-note">Why this matters: on development data this probe reached ${e.dev_pooled_balanced_accuracy.toFixed(2)} balanced accuracy pooled and ${e.dev_decoupled_balanced_accuracy.toFixed(2)} when trained without FracAtlas (chance is 0.33), and the frozen test showed the same pattern for dimensions-only forests, ${e.frozen_test_reference.dims_pooled.toFixed(3)} falling to ${e.frozen_test_reference.dims_decoupled.toFixed(3)} (<a href="results.html#t-short">Results</a>). ${esc(p.caveat)}</p></section>`}
 function ring(M,main){const C=2*Math.PI*52,seg=C/4,gap=6;return `<div class="ring" aria-hidden="true"><svg viewBox="0 0 132 132"><circle class="bg" cx="66" cy="66" r="52"/>${M.map((m,i)=>`<circle class="seg ${m.pred===main.pred?"":"no"}" cx="66" cy="66" r="52" stroke-dasharray="${seg-gap} ${C}" stroke-dashoffset="${-i*seg}" data-len="${seg-gap}" data-c="${C}"/>`).join("")}</svg><div class="mid"><div><b class="agree">${M.filter(m=>m.pred===main.pred).length}/4</b><i>agree</i></div></div></div>`}
 function render(r,isLive){
  const M=r.models,main=M[0],agree=r.all_agree,nofa=M.find(m=>m.id==="no_fracatlas"),f=r.image,nAgree=M.filter(m=>m.pred===main.pred).length;
@@ -99,7 +111,7 @@ function render(r,isLive){
  ${expandedReport(r)}
  ${anatomyNote}
  <div class="rp-result"><div><small>Three-class benchmark · pooled prediction</small><span class="rp-word" aria-label="${main.pred}">${esc(main.pred)}</span><p>Softmax score <b class="conf">0.0</b>%. The model divides its score among Hip, Knee and Shoulder.</p></div>${ring(M,main)}</div>
- <section class="rp-sec"><h3>Four checkpoints, one image</h3>${rows}${verdict}${truth}</section>${fig}${facts}${warn}
+ <section class="rp-sec"><h3>Four checkpoints, one image</h3>${rows}${verdict}${truth}</section>${fig}${facts}${probeReport(r)}${warn}
  <div class="review-export"><button type="button" class="btn" id="download-review">Download review record</button><p>Includes model scores and benchmark agreement. Image pixels and filenames are omitted.</p></div><p class="rp-foot"><b>Project scope.</b> The expanded model scores anatomy. The four benchmark checkpoints compare source sensitivity across Hip, Knee and Shoulder.</p></div></article>`;
  const root=$("#report"),confEl=$(".conf",root),segs=$$(".ring .seg",root),bars=$$(".hb .f",root);
  $("#download-review",root).addEventListener("click",()=>{
@@ -109,6 +121,7 @@ function render(r,isLive){
    input:current?"upload":no,
    visual_review:visualReview[r.id]||null,
    expanded:r.expanded||null,
+   shortcut_probe:r.probe&&r.probe.available?{verdict:r.probe.verdict.level,joint_guess:r.probe.joint.pred,joint_confidence:r.probe.joint.confidence,source_guess:r.probe.source.id,in_range:r.probe.in_range}:null,
    benchmark:M.map(({id,name,pred,probs})=>({id,name,pred,probs})),
    benchmark_agreement:nAgree,
    scope:"Anatomy model evaluation and dataset quality review"
