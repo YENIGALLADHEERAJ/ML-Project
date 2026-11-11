@@ -1,8 +1,35 @@
 # Literature survey — OrthoTrace
 
-**Topic:** source-aware evaluation of Hip/Knee/Shoulder recognition in public orthopaedic X-rays. **Updated:** 10 November 2026.
+**Topic:** source-aware evaluation of Hip/Knee/Shoulder recognition in public orthopaedic X-rays. **Updated:** 11 November 2026.
 
 This survey explains the background, compares related methods and identifies the project's bounded contribution. It uses the repository bibliography and selected primary-source checks. It is a targeted survey, not a systematic review. “A paper exists” and “we critically reviewed its full text” are different statements.
+
+## Why we built OrthoTrace
+
+We started with a practical question for an imaging research team. If a model recognizes a joint in a pooled benchmark, will it still recognize that joint in images from a different source? Public collections can differ in which body regions they contain and how images are framed, sized, or labeled. When those differences align with the joint labels, a model can use them to guess the joint. A high pooled score can then overstate how well it will work on an unfamiliar source. Hill and colleagues demonstrated a related shortcut problem using knee radiographs. Ly and colleagues investigated acquisition-related shortcuts across several modalities, and Zech and colleagues showed that pneumonia prediction performance could decline across hospitals. [Hill et al.](https://www.nature.com/articles/s41598-024-79838-6) · [Ly et al.](https://www.nature.com/articles/s41746-024-01118-4) · [Zech et al.](https://doi.org/10.1371/journal.pmed.1002683)
+
+## What existed and what OrthoTrace contributes
+
+| Prior work | What it established | What we built for this project |
+|---|---|---|
+| **SAM-X** | Organized musculoskeletal radiographs into 28 anatomy categories. [Primary paper](https://doi.org/10.1007/s00330-022-09184-6) | A narrower anatomy model with a workbench for inspecting how the same X-ray is scored by four checkpoints trained on different sources. |
+| **Mitsuyama et al.** | Evaluated radiograph body-part classification and chest projection/orientation across institutions, including a label-quality application. [Primary paper](https://doi.org/10.1007/s00330-025-12053-7) | A source-controlled orthopaedic benchmark that pairs dataset holdouts with simple shortcut controls and visible per-image disagreements. |
+| **Hill et al. and Ly et al.** | Demonstrated why performance can reflect unintended cues and investigated ways to expose them. [Hill et al.](https://www.nature.com/articles/s41598-024-79838-6) · [Ly et al.](https://www.nature.com/articles/s41746-024-01118-4) | Dimensions-only and metadata baselines, matched-image source comparisons, and a paired border experiment with a within-source control. |
+| **FracAtlas and BTXRD** | Released musculoskeletal radiographs with labels for fracture and bone-tumor research, respectively. [FracAtlas](https://doi.org/10.1038/s41597-023-02432-4) · [BTXRD](https://doi.org/10.1038/s41597-024-04311-y) | Used FracAtlas for source-decoupled testing and BTXRD for an external anatomy check. We preserve the original tags alongside later provisional visual reviews. |
+| **Patel et al.** | Identified hip and knee implant models from radiographs to support research on revision planning. [Primary paper](https://doi.org/10.1148/ryai.2021200183) | Used implant-image sources to test anatomy recognition under source shift. Our output is the visible region, and our evaluation asks how well it transfers. |
+
+The distinctive part is the workflow. A reviewer can take one radiograph, compare predictions, inspect the pooled checkpoint's Grad-CAM, see the source and provisional visual labels where available, then export a review record without image pixels or filenames. That connects a benchmark result to an image a person can inspect. An imaging research team could use this workflow to investigate mislabeled files or model disagreements in a de-identified evaluation set.
+
+## Where the evidence supports “best”
+
+| Comparison | Strongest result we can defend | Scope |
+|---|---|---|
+| Classical classifiers | **RBF SVM led the six methods at 56.5% balanced accuracy** on 47 FracAtlas validation images after training without FracAtlas. | Hip, Knee, Shoulder. The pooled validation cohort was different. |
+| Expanded model preprocessing | **Center cropping performed best among the three tested crop settings on the BTXRD follow-up.** Knee detections rose from 8 to 21 of 37, and extra Elbow flags dropped from 33 to 16 of 49. Elbow and Shoulder detections stayed at 5 of 5 and 12 of 12. | Same 54 images before and after. This cohort informed the revision. |
+| Specimen 06 | The current expanded model flags **Elbow alone at a model score of 99.7%**. The original benchmark recorded Knee, and the source tag was Leg. | One held-out image with a provisional visual review. The score is a model output. |
+| Dataset shortcut | A random forest using only width, height and aspect ratio fell from **97.1% pooled to 33.3% source-decoupled balanced accuracy**. | An anatomy-free control on the original three-class study. |
+
+The project’s strongest claim is about **inspectability and source-aware evaluation on this benchmark**. Establishing a best-in-class anatomy model would require a shared evaluation cohort, aligned labels and metrics, and direct comparison with prior systems. Clinical usefulness would also require independent clinician labels and a fresh test representative of the intended setting. Our current evidence supports an academic tool for model and dataset review.
 
 ## 1. What question does the literature help us ask?
 
@@ -62,7 +89,7 @@ These papers show that “classifying an X-ray” is not one task. Body part, pr
 
 THA-AID, the knee-implant external-validation work by Karnuta and colleagues, and Gong and colleagues' hip-implant work concern implant-related identification applications. HipXNet concerns hip-implant loosening.
 
-These papers explain why implant X-rays are a practical imaging domain. They do not mean OrthoTrace implements the same tasks. Our networks output Hip, Knee or Shoulder. We have not trained manufacturer/model labels or a loosening endpoint. Implant presence is associated with some dataset sources, but our source-held-out comparisons do not isolate a causal implant effect.
+These papers explain why implant X-rays are a practical imaging domain. They do not mean OrthoTrace implements the same tasks. The original benchmark outputs Hip, Knee or Shoulder. The current workbench also has an expanded model that scores Hand, Leg and Elbow. We have not trained manufacturer/model labels or a loosening endpoint. Implant presence is associated with some dataset sources, but our source-held-out comparisons do not isolate a causal implant effect.
 
 ## 6. Theme E — data and model foundations
 
